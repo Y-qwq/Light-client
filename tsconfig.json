@@ -17,9 +17,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": "./"
   },
   "include": [
     "src"
-  ]
+  ],
+  // 采用extends 引入的方式避免cra重置tsconfig.json
+  "extends": "./tsconfig.paths.json"
 }

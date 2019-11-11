@@ -1419,6 +1419,18 @@
   resolved "https://registry.npm.taobao.org/@types/json-schema/download/@types/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
   integrity sha1-vf1p1h5GTcyBslFZwnDXWnPBpjY=
 
+"@types/lodash.debounce@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npm.taobao.org/@types/lodash.debounce/download/@types/lodash.debounce-4.0.6.tgz?cache=0&sync_timestamp=1572462699771&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Flodash.debounce%2Fdownload%2F%40types%2Flodash.debounce-4.0.6.tgz#c5a2326cd3efc46566c47e4c0aa248dc0ee57d60"
+  integrity sha1-xaIybNPvxGVmxH5MCqJI3A7lfWA=
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.145"
+  resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.145.tgz#abcafe85788f1392c5d5a144142aaf8529ad6bb9"
+  integrity sha1-q8r+hXiPE5LF1aFEFCqvhSmta7k=
+
 "@types/node@12.12.0":
   version "12.12.0"
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.12.0.tgz#ff3201972d6dc851a9275308a17b9b5094e68057"

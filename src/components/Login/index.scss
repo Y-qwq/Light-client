@@ -1,0 +1,18 @@
+.login {
+    &-content {
+        margin-top: 20px;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &-text-box {
+        font-size: 13px;
+        margin-top: 15px;
+        width: 60%;
+        max-width: 250px;
+        display: flex;
+        justify-content: space-between;
+    }
+}

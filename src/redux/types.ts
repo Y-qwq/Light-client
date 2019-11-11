@@ -1,3 +1,3 @@
 export default {
-  TEST: "TEST",
+  CHANGE_LOGIN: "CHANGE_LOGIN",
 };

@@ -23,6 +23,5 @@
   "include": [
     "src"
   ],
-  // 采用extends 引入的方式避免cra重置tsconfig.json
   "extends": "./tsconfig.paths.json"
 }

@@ -1,0 +1,13 @@
+$menu-height:55px;
+$content-height:calc(100vh - #{$menu-height});
+
+@mixin logoFont {
+    font-family: "LogoFont";
+    letter-spacing: 0.1em;
+}
+
+@mixin logo {
+    @include logoFont;
+    color: #000;
+    font-size: 50px;
+}

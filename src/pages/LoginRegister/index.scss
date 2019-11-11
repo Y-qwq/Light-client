@@ -1,0 +1,26 @@
+@import "@/assets/theme/_base.scss";
+
+.login-register {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+
+    &-bg-box {
+        width: 100%;
+        display: inline-block;
+        background-image: linear-gradient(rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 1));
+    }
+
+    &-bg {
+        width: 100%;
+        mix-blend-mode: overlay;
+    }
+
+    &-logo {
+        @include logo;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 80px;
+    }
+}

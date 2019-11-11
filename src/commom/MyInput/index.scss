@@ -1,0 +1,23 @@
+.my-input-box {
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+    border: 1px #ccc solid;
+    width: 300px;
+    margin-bottom: 20px;
+
+    .my-input {
+        &-name {
+            padding: 0 10px;
+        }
+
+        &-text {
+            height: 1.2rem;
+            padding: 0 10px;
+            flex: 1;
+            border: none;
+            border-left: #ccc 1px solid;
+            outline: none;
+        }
+    }
+}

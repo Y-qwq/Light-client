@@ -5,15 +5,23 @@ interface IAction {
   payload: any;
 }
 
-const userInitialState = {
+export interface IUser {
+  isLogged: boolean;
+}
+
+const userInitialState: IUser = {
   isLogged: false
 };
 
-export function user(state = userInitialState, action: IAction) {
+export function user(state: IUser = userInitialState, action: IAction) {
   switch (action.type) {
-    case types.TEST:
-      console.log("TEST SUCCESS!");
-      return { isLogged: true };
+    case types.CHANGE_LOGIN:
+      let res = {
+        ...state,
+        isLogged: !state.isLogged
+      };
+      if (action.payload !== undefined) res.isLogged = action.payload;
+      return res;
 
     default:
       return state;

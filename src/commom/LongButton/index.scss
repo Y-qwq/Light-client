@@ -1,0 +1,19 @@
+.long {
+    &-button {
+        transition: all 0.3s ease;
+        border: none;
+        margin-top: 40px;
+        display: inline-block;
+        border-radius: 5px;
+        width: 60%;
+        max-width: 250px;
+        height: 35px;
+        background-color: #ccc;
+        color: white;
+        outline: none;
+    }
+
+    &-button-action {
+        background-color: #555;
+    }
+}

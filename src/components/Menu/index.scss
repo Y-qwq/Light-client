@@ -25,4 +25,8 @@
         margin: 0;
         font-size: 10px;
     }
+
+    @media screen and (max-height:500px) {
+        display: none;
+    }
 }

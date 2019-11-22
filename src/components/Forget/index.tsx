@@ -12,7 +12,7 @@ const Forget = ({ history }: RouteConfigComponentProps) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
-  const [resetPage, setResetPage] = useState(true);
+  const [resetPage, setResetPage] = useState(false);
   const hasEmail = useCheckEmail(email);
 
   const handleSendCode = useCallback(() => {

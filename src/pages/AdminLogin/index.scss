@@ -11,6 +11,10 @@
     background-color: #f0f2f5;
     backdrop-filter: blur(10px);
 
+    .my-input-box {
+        border-color: #555 !important;
+    }
+
     &-box {
         border-radius: 5px;
         background-color: rgba($color: #fff, $alpha: 0.9);
@@ -31,7 +35,7 @@
         }
 
         &-prompt {
-            color:#000;
+            color: #000;
             font-size: 0.85rem;
             position: absolute;
             margin-top: 140px;

@@ -10,20 +10,32 @@ interface IMyInput {
   placeholder?: string;
   type?: string;
   value?: string | number | string[];
+  borderColor?: string;
 }
 
-const MyInput = (props: IMyInput) => {
+const MyInput = ({
+  className,
+  name,
+  type,
+  onBlur,
+  onChange,
+  onKeyDown,
+  placeholder,
+  value,
+  borderColor
+}: IMyInput) => {
   return (
-    <div className={`my-input-box ${props.className}`}>
-      <div className="my-input-name">{props.name}</div>
+    <div className={`my-input-box ${className}`}>
+      <div className="my-input-name">{name}</div>
       <input
-        onKeyDown={props.onKeyDown}
-        type={props.type ? props.type : "text"}
+        onKeyDown={onKeyDown}
+        type={type ? type : "text"}
         className="my-input-text"
-        onChange={props.onChange}
-        onBlur={props.onBlur}
-        placeholder={props.placeholder}
-        value={props.value}
+        onChange={onChange}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        value={value}
+        style={{ borderColor }}
       />
     </div>
   );

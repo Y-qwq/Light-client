@@ -24,9 +24,11 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
     setFetchLogin(account, password);
   }, [account, password, setFetchLogin]);
 
-  // 登录失败，清除密码。
+  // 登录回调处理
   useEffect(() => {
     loginStatus === "fail" && setPassword("");
+    loginStatus === "success" &&
+      history.push(type === "admin" ? "/consolePanel" : "/user/info");
   }, [loginStatus]);
 
   // 当前状态是否可登录

@@ -2,7 +2,6 @@ import { useState } from "react";
 import axios from "axios";
 import { message } from "antd";
 import { userLogin, adminLogin } from "@/api";
-import { useHistory } from "react-router";
 
 interface IUseLogin {
   (type: "admin" | "user"): [
@@ -12,7 +11,6 @@ interface IUseLogin {
 }
 
 const useLogin: IUseLogin = (type: "admin" | "user") => {
-  const history = useHistory();
   const [loginStatus, setLoginStatus] = useState<
     "fail" | "loading" | "success"
   >("fail");
@@ -31,7 +29,6 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
       setLoginStatus("success");
       axios.defaults.headers.common["Authorization"] = data.user.token;
       localStorage.setItem(isAdmin ? "adminToken" : "token", data.user.token);
-      history.push(isAdmin ? "/consolePanel" : "/user/info");
     } else {
       setLoginStatus("fail");
     }

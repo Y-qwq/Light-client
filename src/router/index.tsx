@@ -6,8 +6,8 @@ import Forget from "../components/Forget";
 import LoginOut from "../components/LoginOut";
 import Register from "../components/Register";
 
-// 主路由配置
-export const mainRouterList = [
+// 用户(手机)路由配置
+export const mobileRouterList = [
   {
     path: "/",
     exact: true,
@@ -36,6 +36,30 @@ export const mainRouterList = [
       {
         path: "/user/loginRegister/register",
         component: Register
+      }
+    ]
+  }
+];
+
+// PC端(管理员)路由配置
+export const pcRouterList = [
+  {
+    path: "/",
+    exact: true,
+    render: () => <Redirect to="/admin/login" />
+  },
+  {
+    path: "/admin/login",
+    component: lazy(() => import("@/pages/AdminLogin")),
+    routes: [
+      {
+        path: "/admin/login",
+        exact: true,
+        render: () => <Login type={"admin"} />
+      },
+      {
+        path: "/admin/login/forget",
+        component: Forget
       }
     ]
   }

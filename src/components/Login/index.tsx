@@ -46,7 +46,7 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   const forget = useCallback(
     () =>
       history.push(
-        type === "user" ? "/user/loginRegister/forget" : "/login/forget"
+        type === "user" ? "/user/loginRegister/forget" : "/admin/login/forget"
       ),
     [history, type]
   );

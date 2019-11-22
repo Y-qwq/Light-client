@@ -7,7 +7,7 @@ import LongButton from "@/commom/LongButton";
 import MyInput from "@/commom/MyInput";
 import "./index.scss";
 
-const Forget = ({ history }: RouteConfigComponentProps) => {
+const Forget = ({ history, location }: RouteConfigComponentProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +30,11 @@ const Forget = ({ history }: RouteConfigComponentProps) => {
       const res = await resetPassword(email, password, code);
       if (res.data && res.data.type === "success") {
         message.success(res.data.type);
-        history.push("/user/loginRegister/login");
+        history.push(
+          location.pathname.indexOf("admin") !== -1
+            ? "/admin/login"
+            : "/user/loginRegister/login"
+        );
       } else {
         setCode("");
       }

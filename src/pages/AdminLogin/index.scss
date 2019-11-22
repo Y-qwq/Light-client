@@ -1,0 +1,41 @@
+@import "@/assets/theme/_base.scss";
+
+.admin-login {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../../assets/images/bg-admin-login.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: #f0f2f5;
+    backdrop-filter: blur(10px);
+
+    &-box {
+        border-radius: 5px;
+        background-color: rgba($color: #fff, $alpha: 0.9);
+        border: 1px #ccc solid;
+        width: 400px;
+        height: 460px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &-logo {
+            @include logo;
+            margin-top: 50px;
+        }
+
+        &-prompt {
+            color:#000;
+            font-size: 0.85rem;
+            position: absolute;
+            margin-top: 140px;
+        }
+    }
+
+}

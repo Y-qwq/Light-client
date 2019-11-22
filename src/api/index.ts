@@ -5,10 +5,16 @@ axios.defaults.baseURL = "http://127.0.0.1";
 axios.interceptors.response.use(
   response => response,
   error => {
+    // 服务器主动返回的错误,则继续往下传递
     if (error.response && error.response.data && error.response.data.message) {
       message.error(error.response.data.message, 0.8);
+      return error.response;
+    } else {
+      // 否则拦截错误，并提示错误。
+      console.dir(error);
+      error && error.message && message.error(error.message);
+      return Promise.reject(error);
     }
-    return error.response;
   }
 );
 

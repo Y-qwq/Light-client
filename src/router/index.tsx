@@ -49,6 +49,11 @@ export const pcRouterList = [
     render: () => <Redirect to="/admin/login" />
   },
   {
+    path: "/consolePanel",
+    exact: true,
+    component: lazy(() => import("@/pages/ConsolePanel"))
+  },
+  {
     path: "/admin/login",
     component: lazy(() => import("@/pages/AdminLogin")),
     routes: [

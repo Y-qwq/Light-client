@@ -40,7 +40,7 @@ const Forget = ({ history, location }: RouteConfigComponentProps) => {
       }
     };
     confirm();
-  }, [email, password, code, history]);
+  }, [email, password, code, history, location.pathname]);
 
   const handleCheckPassword = useCallback(
     () => password !== confirmPassword && message.error("密码不匹配！"),

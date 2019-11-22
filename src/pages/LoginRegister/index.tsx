@@ -19,7 +19,9 @@ const LoginRegister = ({ location, route }: RouteConfigComponentProps) => {
   return (
     <div className="login-register">
       {location && location.pathname !== "/user/loginRegister/loginout" && head}
-      {route && renderRoutes(route.routes)}
+      <div className="login-register-content">
+        {route && renderRoutes(route.routes)}
+      </div>
     </div>
   );
 };

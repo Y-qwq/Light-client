@@ -1,6 +1,5 @@
 .login {
     &-content {
-        margin-top: 20px;
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -14,5 +13,9 @@
         max-width: 250px;
         display: flex;
         justify-content: space-between;
+
+        &-text{
+            cursor: pointer;
+        }
     }
 }

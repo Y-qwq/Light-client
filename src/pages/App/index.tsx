@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { renderRoutes } from "react-router-config";
 import { createStore, applyMiddleware } from "redux";
@@ -9,7 +9,7 @@ import thunk from "redux-thunk";
 import logger from "redux-logger";
 import axios from "axios";
 import reducers from "@/redux";
-import { mainRouterList } from "@/router";
+import { mobileRouterList, pcRouterList } from "@/router";
 import Menu from "@/components/Menu";
 import { checkToken } from "@/api";
 import "@/assets/theme/_antdTheme.less";
@@ -27,9 +27,31 @@ const Loading: React.FC = () => {
 };
 
 const App: React.SFC = () => {
-  // 检测token有效期。
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 判断是否为手机
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const ua = navigator.userAgent;
+    const Agents = [
+      "Android",
+      "iPhone",
+      "SymbianOS",
+      "Windows Phone",
+      "iPad",
+      "iPod"
+    ];
+    for (var v = 0; v < Agents.length; v++) {
+      if (ua.indexOf(Agents[v]) > 0) {
+        setIsMobile(true);
+        return;
+      }
+    }
+  }, []);
+
+  // 检测token有效期,并设置Authorization。
+  useEffect(() => {
+    const tokenName = isMobile ? "token" : "adminToken";
+    const token = localStorage.getItem(tokenName);
     if (token) {
       axios.defaults.headers.common["Authorization"] = token;
       const check = async () => {
@@ -38,13 +60,15 @@ const App: React.SFC = () => {
       };
       check();
     }
-  }, []);
+  }, [isMobile]);
 
   return (
     <Router>
       <Provider store={store}>
-        <Suspense fallback={<Loading />}>{renderRoutes(mainRouterList)}</Suspense>
-        <Menu />
+        <Suspense fallback={<Loading />}>
+          {renderRoutes(isMobile ? mobileRouterList : pcRouterList)}
+        </Suspense>
+        {isMobile && <Menu />}
       </Provider>
     </Router>
   );

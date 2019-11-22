@@ -1,15 +1,24 @@
-import React, { useState, useCallback, useEffect } from "react";
-import MyInput from "@/commom/MyInput";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { RouteConfigComponentProps } from "react-router-config";
 import LongButton from "@/commom/LongButton";
 import { useHistory } from "react-router";
 import useLogin from "@/hooks/useLogin";
+import MyInput from "@/commom/MyInput";
 import "./index.scss";
 
-const Login: React.SFC = () => {
+interface ILoginComp {
+  type?: "user" | "admin";
+}
+
+interface ILoginRouteComp extends RouteConfigComponentProps {
+  type?: "user" | "admin";
+}
+
+const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   const history = useHistory();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
-  const [loginStatus, setFetchLogin] = useLogin("user");
+  const [loginStatus, setFetchLogin] = useLogin(type);
 
   const handleLogin = useCallback(async () => {
     setFetchLogin(account, password);
@@ -19,6 +28,28 @@ const Login: React.SFC = () => {
   useEffect(() => {
     loginStatus === "fail" && setPassword("");
   }, [loginStatus]);
+
+  // 当前状态是否可登录
+  const action = useMemo(
+    () =>
+      password &&
+      loginStatus === "fail" &&
+      /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/.test(account),
+    [account, password, loginStatus]
+  );
+
+  const register = useCallback(
+    () => history.push("/user/loginRegister/register"),
+    [history]
+  );
+
+  const forget = useCallback(
+    () =>
+      history.push(
+        type === "user" ? "/user/loginRegister/forget" : "/login/forget"
+      ),
+    [history, type]
+  );
 
   return (
     <div className="login-content">
@@ -36,21 +67,14 @@ const Login: React.SFC = () => {
         className="login-password"
         value={password}
         onChange={e => setPassword(e.target.value)}
+        onKeyDown={e => e.keyCode === 13 && action && handleLogin()}
       />
-      <LongButton
-        text="登录"
-        action={
-          password &&
-          loginStatus === "fail" &&
-          /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/.test(
-            account
-          )
-        }
-        onClick={handleLogin}
-      />
+      <LongButton text="登录" action={action} onClick={handleLogin} />
       <div className="login-text-box">
-        <p onClick={() => history.push("/user/loginRegister/register")}>注册</p>
-        <p onClick={() => history.push("/user/loginRegister/forget")}>
+        <p className="login-text-box-text" onClick={register}>
+          {type === "user" && "注册"}
+        </p>
+        <p className="login-text-box-text" onClick={forget}>
           忘记密码
         </p>
       </div>

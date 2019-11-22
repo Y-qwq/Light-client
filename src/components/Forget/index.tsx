@@ -52,7 +52,11 @@ const Forget = ({ history }: RouteConfigComponentProps) => {
             placeholder="请输入邮箱"
             onChange={({ target }) => setEmail(target.value)}
           />
-          <LongButton text="发送验证邮件" action={hasEmail} onClick={handleSendCode} />
+          <LongButton
+            text="发送验证邮件"
+            action={hasEmail}
+            onClick={handleSendCode}
+          />
         </>
       )}
       {resetPage && (

@@ -8,7 +8,13 @@ const LoginRegister = ({ location, route }: RouteConfigComponentProps) => {
     () => (
       <>
         <div className="login-register-bg-box">
-          <img src={bgImg} className="login-register-bg" alt="logo" />
+          <img
+            src={bgImg}
+            className="login-register-bg"
+            alt="logo"
+            draggable={false}
+            onClick={() => false}
+          />
         </div>
         <p className="login-register-logo">Light</p>
       </>

@@ -6,6 +6,7 @@ import { userLogin, adminLogin } from "@/api";
 interface IUseLogin {
   (type: "admin" | "user"): [
     "fail" | "loading" | "success",
+    number,
     (account: string, password: string) => Promise<void>
   ];
 }
@@ -14,6 +15,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
   const [loginStatus, setLoginStatus] = useState<
     "fail" | "loading" | "success"
   >("fail");
+  const [auth, setAuth] = useState(0);
 
   const setFetchLogin = async (account: string, password: string) => {
     const isAdmin = type === "admin";
@@ -26,6 +28,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
     }
     if (data && data.type === "success") {
       message.success(data.message);
+      setAuth(+data.user.auth);
       setLoginStatus("success");
       axios.defaults.headers.common["Authorization"] = data.user.token;
       localStorage.setItem(isAdmin ? "adminToken" : "token", data.user.token);
@@ -34,7 +37,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
     }
   };
 
-  return [loginStatus, setFetchLogin];
+  return [loginStatus, auth, setFetchLogin];
 };
 
 export default useLogin;

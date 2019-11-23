@@ -5,6 +5,7 @@ import Login from "../components/Login";
 import Forget from "../components/Forget";
 import LoginOut from "../components/LoginOut";
 import Register from "../components/Register";
+import FullScreenLoading from "@/commom/FullScreenLoading";
 
 // 用户(手机)路由配置
 export const mobileRouterList = [
@@ -12,6 +13,10 @@ export const mobileRouterList = [
     path: "/",
     exact: true,
     render: () => <Redirect to="/user" />
+  },
+  {
+    path: "/loading",
+    component: FullScreenLoading
   },
   {
     path: "/user/info",
@@ -47,6 +52,10 @@ export const pcRouterList = [
     path: "/",
     exact: true,
     render: () => <Redirect to="/admin/login" />
+  },
+  {
+    path: "loading",
+    component: FullScreenLoading
   },
   {
     path: "/consolePanel",

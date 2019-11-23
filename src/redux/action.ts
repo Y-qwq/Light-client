@@ -1,9 +1,9 @@
 import types from "./types";
 
 export class loginAction {
-  public static changeLogin = (payload?: boolean) => {
+  public static changeLoginStatus = (payload?: number) => {
     return {
-      type: types.CHANGE_LOGIN,
+      type: types.CHANGE_LOGIN_STATUS,
       payload
     };
   };

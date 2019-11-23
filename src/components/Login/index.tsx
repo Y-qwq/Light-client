@@ -5,6 +5,8 @@ import { useHistory } from "react-router";
 import useLogin from "@/hooks/useLogin";
 import MyInput from "@/commom/MyInput";
 import "./index.scss";
+import { useDispatch } from "react-redux";
+import { loginAction } from "@/redux/action";
 
 interface ILoginComp {
   type?: "user" | "admin";
@@ -16,9 +18,10 @@ interface ILoginRouteComp extends RouteConfigComponentProps {
 
 const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
-  const [loginStatus, setFetchLogin] = useLogin(type);
+  const [loginStatus, auth, setFetchLogin] = useLogin(type);
 
   const handleLogin = useCallback(async () => {
     setFetchLogin(account, password);
@@ -27,9 +30,11 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   // 登录回调处理
   useEffect(() => {
     loginStatus === "fail" && setPassword("");
-    loginStatus === "success" &&
+    if (loginStatus === "success") {
+      dispatch(loginAction.changeLoginStatus(auth));
       history.push(type === "admin" ? "/consolePanel" : "/user/info");
-  }, [loginStatus]);
+    }
+  }, [loginStatus, history, type, dispatch, auth]);
 
   // 当前状态是否可登录
   const action = useMemo(

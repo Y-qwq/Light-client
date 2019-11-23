@@ -8,8 +8,8 @@ import "./index.scss";
 const Menu: React.SFC = () => {
   const location = useLocation();
   const history = useHistory();
-  const { isLogged } = useSelector((state: { user: IUser }) => ({
-    isLogged: state.user.isLogged
+  const { loginStatus } = useSelector((state: { user: IUser }) => ({
+    loginStatus: state.user.loginStatus
   }));
   const menuList = [
     { to: "/", name: "ALL", icon: "all2" },
@@ -34,7 +34,7 @@ const Menu: React.SFC = () => {
     (idx: number) => {
       setAction(idx);
       if (idx === 2) {
-        if (!isLogged) {
+        if (loginStatus === 0) {
           history.push("/user/loginRegister/loginout");
         } else {
           history.push("/user/info");
@@ -43,14 +43,21 @@ const Menu: React.SFC = () => {
       }
       history.push(menuList[idx].to);
     },
-    [history, menuList, isLogged]
+    [history, menuList, loginStatus]
   );
 
   return (
     <div className="menu">
       {menuList.map(({ icon, name }, idx) => (
-        <div className="menu-box" key={idx} onClick={() => handleMenuClick(idx)}>
-          <MyIcon type={icon + (idx === action ? "-action" : "")} className="menu-icon" />
+        <div
+          className="menu-box"
+          key={idx}
+          onClick={() => handleMenuClick(idx)}
+        >
+          <MyIcon
+            type={icon + (idx === action ? "-action" : "")}
+            className="menu-icon"
+          />
           <p className="menu-name">{name}</p>
         </div>
       ))}

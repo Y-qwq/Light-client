@@ -6,22 +6,21 @@ interface IAction {
 }
 
 export interface IUser {
-  isLogged: boolean;
+  loginStatus: number;
 }
 
 const userInitialState: IUser = {
-  isLogged: false
+  // -1:初始化未知能否登录  0：未登录 1-9：已登录，数字代表权限
+  loginStatus: -1
 };
 
 export function user(state: IUser = userInitialState, action: IAction) {
   switch (action.type) {
-    case types.CHANGE_LOGIN:
-      let res = {
+    case types.CHANGE_LOGIN_STATUS:
+      return {
         ...state,
-        isLogged: !state.isLogged
+        loginStatus: action.payload
       };
-      if (action.payload !== undefined) res.isLogged = action.payload;
-      return res;
 
     default:
       return state;

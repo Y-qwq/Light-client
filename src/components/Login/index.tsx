@@ -21,7 +21,7 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   const dispatch = useDispatch();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
-  const [loginStatus, auth, setFetchLogin] = useLogin(type);
+  const [loginStatus, user, setFetchLogin] = useLogin(type);
 
   const handleLogin = useCallback(async () => {
     setFetchLogin(account, password);
@@ -30,11 +30,12 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
   // 登录回调处理
   useEffect(() => {
     loginStatus === "fail" && setPassword("");
-    if (loginStatus === "success") {
-      dispatch(loginAction.changeLoginStatus(auth));
-      history.push(type === "admin" ? "/consolePanel" : "/user/info");
+    if (loginStatus === "success" && user) {
+      dispatch(loginAction.changeLoginStatus(user.auth));
+      dispatch(loginAction.setUserInfo(user));
+      history.push(type === "admin" ? "/admin/consolePanel" : "/user/info");
     }
-  }, [loginStatus, history, type, dispatch, auth]);
+  }, [loginStatus, history, type, dispatch, user]);
 
   // 当前状态是否可登录
   const action = useMemo(

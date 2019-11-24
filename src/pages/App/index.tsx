@@ -29,8 +29,10 @@ const App: React.SFC = () => {
   const checkTokenAndLogin = useCallback(async () => {
     const { data } = isMobile ? await checkToken() : await checkAdminToken();
     if (data && data.type === "success") {
-      const auth = +data.auth && 1;
-      dispatch(loginAction.changeLoginStatus(auth));
+      const user = data.user;
+      // uptoken仅管理员权限账户才存在
+      dispatch(loginAction.changeLoginStatus(+user.auth));
+      dispatch(loginAction.setUserInfo(user));
       // 内部获取目标URL，防止添加依赖导致多次执行
       let targetUrl;
       setTargetUrl(state => {
@@ -40,7 +42,7 @@ const App: React.SFC = () => {
       // 有目标URL跳转目标URL，没有跳转对应主页
       targetUrl
         ? history.replace(targetUrl)
-        : history.push(auth <= 2 ? "/consolePanel" : "/user/all");
+        : history.push(isMobile ? "/user/all" : "/admin/consolePanel");
     } else {
       delete axios.defaults.headers.common["Authorization"];
       dispatch(loginAction.changeLoginStatus(0));
@@ -51,21 +53,28 @@ const App: React.SFC = () => {
   useEffect(() => {
     const tokenName = isMobile ? "token" : "adminToken";
     const token = localStorage.getItem(tokenName);
-    if (token) {
+    // 如果用户直接输入登录界面URL，则不做自动登录处理
+    if (token && !/login/g.test(pathname)) {
       axios.defaults.headers.common["Authorization"] = token;
       checkTokenAndLogin();
     } else {
       dispatch(loginAction.changeLoginStatus(0));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile, dispatch, checkTokenAndLogin]);
 
   // 权限路由
   useEffect(() => {
     // 想直接进入某页面时，显示loading界面，等待token检查完再跳转鉴权
-    if (loginStatus === -1 && !targetUrl && pathname !== "/") {
+    if (
+      loginStatus === -1 &&
+      !targetUrl &&
+      pathname !== "/" &&
+      !/((^\/$)|login)/g.test(pathname)
+    ) {
       setTargetUrl(pathname);
       history.replace("/loading");
-      // 未登录 权限路由
+      // 未登录 仅能访问登录界面
     } else if (loginStatus === 0) {
       if (!/((^\/$)|login)/g.test(pathname)) {
         message.warn("请您先登录！");
@@ -73,7 +82,7 @@ const App: React.SFC = () => {
           isMobile ? "/user/loginRegister/loginout" : "/admin/login"
         );
       }
-      // 用户 权限路由
+      // 用户 不能访问带admin目录的页面
     } else if (loginStatus === 3) {
       if (/admin/g.test(pathname)) {
         message.warn("未登录或者你的账户权限不足，请以管理员账户登录！");

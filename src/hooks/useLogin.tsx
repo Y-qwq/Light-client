@@ -2,11 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { message } from "antd";
 import { userLogin, adminLogin } from "@/api";
+import { IUserInfo } from "@/redux/reducers";
 
 interface IUseLogin {
   (type: "admin" | "user"): [
     "fail" | "loading" | "success",
-    number,
+    IUserInfo | undefined,
     (account: string, password: string) => Promise<void>
   ];
 }
@@ -15,7 +16,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
   const [loginStatus, setLoginStatus] = useState<
     "fail" | "loading" | "success"
   >("fail");
-  const [auth, setAuth] = useState(0);
+  const [user, setUser] = useState(undefined);
 
   const setFetchLogin = async (account: string, password: string) => {
     const isAdmin = type === "admin";
@@ -28,7 +29,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
     }
     if (data && data.type === "success") {
       message.success(data.message);
-      setAuth(+data.user.auth);
+      setUser(data.user);
       setLoginStatus("success");
       axios.defaults.headers.common["Authorization"] = data.user.token;
       localStorage.setItem(isAdmin ? "adminToken" : "token", data.user.token);
@@ -37,7 +38,7 @@ const useLogin: IUseLogin = (type: "admin" | "user") => {
     }
   };
 
-  return [loginStatus, auth, setFetchLogin];
+  return [loginStatus, user, setFetchLogin];
 };
 
 export default useLogin;

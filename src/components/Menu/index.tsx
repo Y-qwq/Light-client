@@ -12,8 +12,8 @@ const Menu: React.SFC = () => {
     loginStatus: state.user.loginStatus
   }));
   const menuList = [
-    { to: "/", name: "ALL", icon: "all2" },
-    { to: "/", name: "LIGHT", icon: "light" },
+    { to: "/user/all", name: "ALL", icon: "all2" },
+    { to: "/user/light", name: "LIGHT", icon: "light" },
     { to: "/user", name: "ME", icon: "me" }
   ];
 
@@ -21,11 +21,11 @@ const Menu: React.SFC = () => {
 
   useEffect(() => {
     const pathname = location.pathname;
-    if (/^\/user.*/.test(pathname)) {
+    if (/^\/user\/(info|loginRegister).*/.test(pathname)) {
       setAction(2);
-    } else if (/^\/light.*/.test(pathname)) {
+    } else if (/^\/user\/light.*/.test(pathname)) {
       setAction(1);
-    } else {
+    } else if(/^\/user\/all.*/.test(pathname)){
       setAction(0);
     }
   }, [location.pathname]);

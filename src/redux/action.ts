@@ -7,4 +7,10 @@ export class loginAction {
       payload
     };
   };
+  public static setUserInfo = (payload?: object) => {
+    return {
+      type: types.SET_USER_INFO,
+      payload
+    };
+  };
 }

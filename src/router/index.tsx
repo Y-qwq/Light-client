@@ -5,18 +5,26 @@ import Login from "../components/Login";
 import Forget from "../components/Forget";
 import LoginOut from "../components/LoginOut";
 import Register from "../components/Register";
-import FullScreenLoading from "@/commom/FullScreenLoading";
+import FullScreenLoading from "../commom/FullScreenLoading";
 
 // 用户(手机)路由配置
 export const mobileRouterList = [
   {
     path: "/",
     exact: true,
-    render: () => <Redirect to="/user" />
+    render: () => <Redirect to="/user/all" />
   },
   {
     path: "/loading",
     component: FullScreenLoading
+  },
+  {
+    path: "/user/all",
+    component: lazy(() => import("../pages/UserAll"))
+  },
+  {
+    path: "/user/light",
+    component: lazy(() => import("../pages/Light"))
   },
   {
     path: "/user/info",
@@ -51,14 +59,18 @@ export const pcRouterList = [
   {
     path: "/",
     exact: true,
-    render: () => <Redirect to="/admin/login" />
+    render: () => <Redirect to="/admin/consolePanel" />
   },
   {
     path: "loading",
     component: FullScreenLoading
   },
   {
-    path: "/consolePanel",
+    path: "/admin/changeInfo",
+    component: lazy(() => import("@/pages/ChangeInfo"))
+  },
+  {
+    path: "/admin/consolePanel",
     exact: true,
     component: lazy(() => import("@/pages/ConsolePanel"))
   },

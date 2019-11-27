@@ -1446,6 +1446,11 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.1.tgz#48fd98c1561fe718b61733daed46ff115b496e18"
   integrity sha512-eqz8c/0kwNi/OEHQfvIuJVLTst3in0e7uTKeuY+WL/zfKn0xVujOTp42bS/vUUokhK5P2BppLd9JXMOMHcgbjA==
 
+"@types/qiniu-js@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.npm.taobao.org/@types/qiniu-js/download/@types/qiniu-js-2.5.0.tgz#6d4e3948eae48dd65ee8fd39e4570799042aed0a"
+  integrity sha1-bU45SOrkjdZe6P055FcHmQQq7Qo=
+
 "@types/react-dom@16.9.3":
   version "16.9.3"
   resolved "https://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.9.3.tgz#4006ff0e13958af91313869077c04cb20d9b9d04"
@@ -9083,6 +9088,11 @@ q@^1.1.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
+
+qiniu-js@^2.5.5:
+  version "2.5.5"
+  resolved "https://registry.npm.taobao.org/qiniu-js/download/qiniu-js-2.5.5.tgz?cache=0&sync_timestamp=1571819746863&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqiniu-js%2Fdownload%2Fqiniu-js-2.5.5.tgz#77d295f222620f9377d6148f3f757d189a1e4977"
+  integrity sha1-d9KV8iJiD5N31hSPP3V9GJoeSXc=
 
 qs@6.5.2, qs@~6.5.2:
   version "6.5.2"

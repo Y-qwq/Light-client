@@ -10,4 +10,5 @@ $content-height:calc(100vh - #{$menu-height});
     @include logoFont;
     color: #000;
     font-size: 50px;
+    user-select: none;
 }

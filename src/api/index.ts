@@ -18,11 +18,11 @@ axios.interceptors.response.use(
   }
 );
 
-const GET = (url: string, params?: {}) => axios.get(url, { params });
-const POST = (url: string, params?: {}) => axios.post(url, params);
+const GET = (url: string, params?: {}) => axios.get("/api" + url, { params });
+const POST = (url: string, params?: {}) => axios.post("/api" + url, params);
 
-export const checkToken = () => GET("/checkToken");
-export const checkAdminToken = () => GET("/checkAdminToken");
+export const checkToken = () => GET("/login/checkToken");
+export const checkAdminToken = () => GET("/login/checkAdminToken");
 
 export const checkEmail = (email: string) =>
   GET("/login/checkEmail", { email });

@@ -7,7 +7,7 @@ import { checkToken, checkAdminToken } from "@/api";
 import useCheckMobile from "@/hooks/useCheckMobile";
 import { renderRoutes } from "react-router-config";
 import { loginAction } from "@/redux/action";
-import { IUser } from "@/redux/reducers";
+import { IState } from "@/redux/reducers";
 import Menu from "@/components/Menu";
 import { message } from "antd";
 import axios from "axios";
@@ -22,15 +22,12 @@ const App: React.SFC = () => {
   const { pathname } = useLocation();
   const isMobile = useCheckMobile();
   const [targetUrl, setTargetUrl] = useState("");
-  const loginStatus = useSelector(
-    (state: { user: IUser }) => state.user.loginStatus
-  );
+  const loginStatus = useSelector((state: IState) => state.user.loginStatus);
 
   const checkTokenAndLogin = useCallback(async () => {
     const { data } = isMobile ? await checkToken() : await checkAdminToken();
     if (data && data.type === "success") {
       const user = data.user;
-      // uptoken仅管理员权限账户才存在
       dispatch(loginAction.changeLoginStatus(+user.auth));
       dispatch(loginAction.setUserInfo(user));
       // 内部获取目标URL，防止添加依赖导致多次执行

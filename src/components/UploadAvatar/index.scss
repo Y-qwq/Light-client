@@ -1,0 +1,31 @@
+.avatar-uploader {
+
+    &-img {
+        user-select: none;
+        color: #f56a00;
+        background-color: #fde3cf;
+        cursor: pointer;
+    }
+
+    .loading {
+        .loading-box-img {
+            filter: brightness(0.6);
+        }
+    }
+
+    .loading-box {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+
+
+        &-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            transform: translate(50%, 50%);
+            color: #1890ff;
+        }
+    }
+}

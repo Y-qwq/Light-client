@@ -6,11 +6,12 @@ interface IAction {
 }
 
 export interface IUserInfo {
+  _id: string;
   auth: number;
   collections: string[];
   email: string;
   lastLoginIp: string;
-  upToken?: string;
+  qiniu?: { server: string; token: string };
   username: string;
   avatar?: string;
   introduction?: string;
@@ -21,16 +22,21 @@ export interface IUser {
   info: IUserInfo;
 }
 
+export interface IState {
+  user: IUser;
+}
+
 const userInitialState: IUser = {
   // -1:初始化未知能否登录  0：未登录 1-9：已登录，数字代表权限
   loginStatus: -1,
   info: {
+    _id: "",
     email: "",
     username: "",
     auth: 0,
     collections: [],
     lastLoginIp: "",
-    upToken: "",
+    qiniu: { server: "", token: "" },
     avatar: "",
     introduction: ""
   }

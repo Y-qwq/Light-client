@@ -18,6 +18,9 @@ axios.interceptors.response.use(
   }
 );
 
+export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 根据存储区域修改上传域名
+export const QINIU_CLIENT = "http://q1f9rvxhs.bkt.clouddn.com"; // 图片地址
+
 const GET = (url: string, params?: {}) => axios.get("/api" + url, { params });
 const POST = (url: string, params?: {}) => axios.post("/api" + url, params);
 
@@ -49,5 +52,8 @@ export const forgetPassword = (email: string) =>
   POST("/login/forgetPassword", { email });
 export const resetPassword = (email: string, password: string, code: string) =>
   POST("/login/resetPassword", { email, password, code });
+
+export const getForceUploadToken = (key: string) =>
+  POST("/article/getForceUptoken", { key });
 
 export default { GET, POST };

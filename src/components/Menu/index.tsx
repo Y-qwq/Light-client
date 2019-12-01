@@ -2,13 +2,13 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import MyIcon from "@/assets/MyIcon";
 import { useSelector } from "react-redux";
-import { IUser } from "@/redux/reducers";
+import { IState } from "@/redux/reducers";
 import "./index.scss";
 
 const Menu: React.SFC = () => {
   const location = useLocation();
   const history = useHistory();
-  const { loginStatus } = useSelector((state: { user: IUser }) => ({
+  const { loginStatus } = useSelector((state: IState) => ({
     loginStatus: state.user.loginStatus
   }));
   const menuList = [
@@ -25,7 +25,7 @@ const Menu: React.SFC = () => {
       setAction(2);
     } else if (/^\/user\/light.*/.test(pathname)) {
       setAction(1);
-    } else if(/^\/user\/all.*/.test(pathname)){
+    } else if (/^\/user\/all.*/.test(pathname)) {
       setAction(0);
     }
   }, [location.pathname]);

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect } from "react";
-import { Icon, Form, Input, Button, message } from "antd";
-import { useHistory } from "react-router";
-import UploadAvatar from "@/components/UploadAvatar";
 import { RouteConfigComponentProps } from "react-router-config";
+import { Icon, Form, Input, Button, message } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import UploadAvatar from "@/components/UploadAvatar";
 import { FormComponentProps } from "antd/lib/form";
-import { useSelector } from "react-redux";
+import { loginAction } from "@/redux/action";
+import { useHistory } from "react-router";
 import { IState } from "@/redux/reducers";
-import "./index.scss";
 import { updateUserInfo } from "@/api";
+import "./index.scss";
 
 interface IChangeInfoProps
   extends RouteConfigComponentProps,
@@ -18,6 +19,7 @@ const { Item } = Form;
 const ChangeInfo = Form.create<IChangeInfoProps>()(
   (props: IChangeInfoProps) => {
     const history = useHistory();
+    const dispatch = useDispatch();
     const user = useSelector((state: IState) => state.user.info);
     const { getFieldDecorator, setFieldsValue, getFieldsValue } = props.form;
 
@@ -42,13 +44,16 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
       const res = await updateUserInfo(data);
       if (res.data.type === "success") {
         message.success("修改信息成功！");
+        delete data.password;
+        const info = { ...user, ...data };
+        dispatch(loginAction.setUserInfo(info));
         setTimeout(() => {
           history.push("/admin/consolePanel");
-        }, 1000);
+        }, 600);
       } else {
         message.error("修改信息失败！");
       }
-    }, [getFieldsValue, history]);
+    }, [getFieldsValue, history, dispatch, user]);
 
     const formItemLayout = {
       labelCol: {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
 import { Icon, Form, Input, Button, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
@@ -39,7 +39,7 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
       []
     );
 
-    const updateInfo = useCallback(async () => {
+    const handleSubmit = useCallback(async () => {
       const data = getFieldsValue();
       const res = await updateUserInfo(data);
       if (res.data.type === "success") {
@@ -66,12 +66,15 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
       }
     };
 
-    const goBack = (
-      <Icon
-        type="left"
-        className="change-info-goback"
-        onClick={useCallback(() => history.goBack(), [history])}
-      />
+    const goBack = useMemo(
+      () => (
+        <Icon
+          type="left"
+          className="change-info-goback"
+          onClick={() => history.goBack()}
+        />
+      ),
+      [history]
     );
 
     return (
@@ -81,7 +84,9 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
         <div className="change-info-content">
           <Form className="info" {...formItemLayout}>
             <Item label="头像">
-              <UploadAvatar _id={user._id} name="A" />
+              {getFieldDecorator("avatar")(
+                <UploadAvatar _id={user._id} name="A" />
+              )}
             </Item>
             <Item label="用户名">
               {getFieldDecorator("username", {
@@ -117,7 +122,7 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
                 type="primary"
                 htmlType="submit"
                 className="change-info-submit"
-                onClick={updateInfo}
+                onClick={handleSubmit}
               >
                 确认修改
               </Button>

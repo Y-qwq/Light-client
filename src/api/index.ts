@@ -57,5 +57,7 @@ export const getForceUploadToken = (key: string) =>
   POST("/user/getForceUptoken", { key });
 
 export const updateUserInfo = (info: {}) => POST("/user/updateInfo", info);
+export const updateUserAvatar = (avatar: string) =>
+  POST("/user/updateAvatar", { avatar });
 
 export default { GET, POST };

@@ -43,7 +43,7 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
       if (res.data.type === "success") {
         message.success("修改信息成功！");
         setTimeout(() => {
-          history.goBack();
+          history.push("/admin/consolePanel");
         }, 1000);
       } else {
         message.error("修改信息失败！");

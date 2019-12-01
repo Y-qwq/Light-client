@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Layout, Menu, Icon, Avatar, Dropdown } from "antd";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "./index.scss";
 
@@ -14,12 +15,12 @@ const ConsolePanel: React.SFC = () => {
   const userMenu = (
     <Menu>
       <Menu.Item key="1">
-        <a href="/admin/changeInfo">修改个人信息</a>
+        <Link to="/admin/changeInfo">修改个人信息</Link>
       </Menu.Item>
       <Menu.Item key="2">
-        <a href="/admin/login" onClick={handleLoginOut}>
+        <Link to="/admin/login" onClick={handleLoginOut}>
           退出
-        </a>
+        </Link>
       </Menu.Item>
     </Menu>
   );

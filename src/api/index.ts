@@ -54,6 +54,8 @@ export const resetPassword = (email: string, password: string, code: string) =>
   POST("/login/resetPassword", { email, password, code });
 
 export const getForceUploadToken = (key: string) =>
-  POST("/article/getForceUptoken", { key });
+  POST("/user/getForceUptoken", { key });
+
+export const updateUserInfo = (info: {}) => POST("/user/updateInfo", info);
 
 export default { GET, POST };

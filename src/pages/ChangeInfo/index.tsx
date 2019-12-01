@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { Icon, Form, Input } from "antd";
+import { Icon, Form, Input, Button, message } from "antd";
 import { useHistory } from "react-router";
 import UploadAvatar from "@/components/UploadAvatar";
 import { RouteConfigComponentProps } from "react-router-config";
@@ -7,6 +7,7 @@ import { FormComponentProps } from "antd/lib/form";
 import { useSelector } from "react-redux";
 import { IState } from "@/redux/reducers";
 import "./index.scss";
+import { updateUserInfo } from "@/api";
 
 interface IChangeInfoProps
   extends RouteConfigComponentProps,
@@ -18,7 +19,7 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
   (props: IChangeInfoProps) => {
     const history = useHistory();
     const user = useSelector((state: IState) => state.user.info);
-    const { getFieldDecorator, setFieldsValue } = props.form;
+    const { getFieldDecorator, setFieldsValue, getFieldsValue } = props.form;
 
     useEffect(() => {
       const { username, email, introduction, avatar } = user;
@@ -35,6 +36,19 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
       },
       []
     );
+
+    const updateInfo = useCallback(async () => {
+      const data = getFieldsValue();
+      const res = await updateUserInfo(data);
+      if (res.data.type === "success") {
+        message.success("修改信息成功！");
+        setTimeout(() => {
+          history.goBack();
+        }, 1000);
+      } else {
+        message.error("修改信息失败！");
+      }
+    }, [getFieldsValue, history]);
 
     const formItemLayout = {
       labelCol: {
@@ -80,7 +94,7 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
               })(
                 <Input
                   type="password"
-                  placeholder="若想改密码，请输入新的密码！"
+                  placeholder="若需要改密码，请输入新的密码！"
                 />
               )}
             </Item>
@@ -94,6 +108,14 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
                   placeholder="这个人很懒，什么也没留下~"
                 />
               )}
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="change-info-submit"
+                onClick={updateInfo}
+              >
+                确认修改
+              </Button>
             </Item>
           </Form>
         </div>

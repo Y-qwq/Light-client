@@ -80,7 +80,7 @@ const App: React.SFC = () => {
         );
       }
       // 用户 不能访问带admin目录的页面
-    } else if (loginStatus === 3) {
+    } else if (loginStatus === 1) {
       if (/admin/g.test(pathname)) {
         message.warn("未登录或者你的账户权限不足，请以管理员账户登录！");
         history.push(isMobile ? "/" : "/admin/login");

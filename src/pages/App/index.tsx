@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useCallback } from "react";
-import FullScreenLoading from "@/commom/FullScreenLoading";
+import Loading from "@/commom/Loading";
 import { mobileRouterList, pcRouterList } from "@/router";
 import { useDispatch, useSelector } from "react-redux";
 import { checkToken, checkAdminToken } from "@/api";
@@ -51,14 +51,14 @@ const App: React.SFC = () => {
   return (
     <>
       {loginStatus !== -1 ? (
-        <Suspense fallback={<FullScreenLoading />}>
+        <Suspense fallback={<Loading />}>
           {renderRoutes(
             isMobile ? mobileRouterList : pcRouterList,
             loginStatus
           )}
         </Suspense>
       ) : (
-        <FullScreenLoading />
+        <Loading />
       )}
       {isMobile && <Menu />}
     </>

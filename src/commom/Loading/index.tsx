@@ -1,12 +1,13 @@
 import React from "react";
 import { Spin } from "antd";
 
-const FullScreenLoading: React.FC = () => {
+const Loading: React.FC = () => {
   return (
     <Spin
       tip="Loading"
       style={{
-        position: "fixed",
+        position: "absolute",
+        zIndex: 99,
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)"
@@ -15,4 +16,4 @@ const FullScreenLoading: React.FC = () => {
   );
 };
 
-export default FullScreenLoading;
+export default Loading;

@@ -2,6 +2,11 @@ import axios from "axios";
 import { message } from "antd";
 
 axios.defaults.baseURL = "http://127.0.0.1";
+
+export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
+
+export const QINIU_CLIENT = "http://q1f9rvxhs.bkt.clouddn.com"; // 图片根地址
+
 axios.interceptors.response.use(
   response => response,
   error => {
@@ -18,13 +23,11 @@ axios.interceptors.response.use(
   }
 );
 
-export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 根据存储区域修改上传域名
-export const QINIU_CLIENT = "http://q1f9rvxhs.bkt.clouddn.com"; // 图片地址
-
 const GET = (url: string, params?: {}) => axios.get("/api" + url, { params });
 const POST = (url: string, params?: {}) => axios.post("/api" + url, params);
 
 export const checkToken = () => GET("/login/checkToken");
+
 export const checkAdminToken = () => GET("/login/checkAdminToken");
 
 export const checkEmail = (email: string) =>
@@ -50,6 +53,7 @@ export const adminRegister = (
 
 export const forgetPassword = (email: string) =>
   POST("/login/forgetPassword", { email });
+
 export const resetPassword = (email: string, password: string, code: string) =>
   POST("/login/resetPassword", { email, password, code });
 
@@ -57,6 +61,7 @@ export const getForceUploadToken = (key: string) =>
   POST("/user/getForceUptoken", { key });
 
 export const updateUserInfo = (info: {}) => POST("/user/updateInfo", info);
+
 export const updateUserAvatar = (avatar: string) =>
   POST("/user/updateAvatar", { avatar });
 

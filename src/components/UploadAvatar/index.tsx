@@ -27,8 +27,6 @@ export interface IUploadAvatarProps {
 const UploadAvatar = forwardRef(
   ({ _id, name, size = 64, onChange, value }: IUploadAvatarProps, ref: any) => {
     const [loading, setLoading] = useState(false);
-    // 图片是否存在
-    const [validUrl, setValidUrl] = useState(true);
     // 图片hash值，用以控制头像刷新
     const [imgHash, setImgHash] = useState("");
     const [token, setToken] = useState("");
@@ -50,7 +48,6 @@ const UploadAvatar = forwardRef(
             setImgHash(hash);
             onChange && onChange(hash);
             setLoading(false);
-            setValidUrl(true);
           }
         }
       },
@@ -62,29 +59,23 @@ const UploadAvatar = forwardRef(
       res.data.type === "success" && setToken(res.data.token);
     }, [_id]);
 
-    const getAvatarFail = useCallback(() => {
-      setValidUrl(false);
-      return false;
-    }, []);
-
-    const avatar = useMemo(() => {
-      if (validUrl && imgHash) {
-        return (
+    const avatar = useMemo(
+      () =>
+        imgHash ? (
           <Avatar
             size={size}
             src={`${QINIU_CLIENT}/avatar/${_id}?h=${imgHash}`}
             className={`loading-box-img`}
-            onError={getAvatarFail}
-          />
-        );
-      } else {
-        return (
-          <Avatar className="avatar-uploader-img" size={size}>
+          >
             {name ? name : "U"}
           </Avatar>
-        );
-      }
-    }, [validUrl, name, imgHash, getAvatarFail, size, _id]);
+        ) : (
+          <Avatar size={size} className={`loading-box-img`}>
+            {name ? name : "U"}
+          </Avatar>
+        ),
+      [name, imgHash, size, _id]
+    );
 
     return (
       <Upload

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { renderRoutes, RouteConfigComponentProps } from "react-router-config";
-import bgImg from "@/assets/images/bg-login.jpg";
+import { RouteConfigComponentProps } from "react-router-config";
+import renderRoutes from "@/router/renderRoutes";
+import { QINIU_CLIENT } from "@/api";
 import "./index.scss";
 
 const LoginRegister = ({ location, route }: RouteConfigComponentProps) => {
@@ -9,7 +10,7 @@ const LoginRegister = ({ location, route }: RouteConfigComponentProps) => {
       <>
         <div className="login-register-bg-box">
           <img
-            src={bgImg}
+            src={`${QINIU_CLIENT}/light/bg-login.jpg`}
             className="login-register-bg"
             alt="logo"
             draggable={false}
@@ -26,7 +27,7 @@ const LoginRegister = ({ location, route }: RouteConfigComponentProps) => {
     <div className="login-register">
       {location && location.pathname !== "/user/loginRegister/loginout" && head}
       <div className="login-register-content">
-        {route && renderRoutes(route.routes)}
+        {route && renderRoutes(route.routes, route.authed)}
       </div>
     </div>
   );

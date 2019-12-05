@@ -1,5 +1,10 @@
 import types from "./types";
 
+export interface IState {
+  user: IUser;
+  data: IData;
+}
+
 interface IAction {
   type: string;
   payload: any;
@@ -11,6 +16,7 @@ export interface IUserInfo {
   collections: string[];
   email: string;
   lastLoginIp: string;
+  lastLoginAddress: string;
   qiniu?: { server: string; token: string };
   username: string;
   avatar?: string;
@@ -20,10 +26,6 @@ export interface IUserInfo {
 export interface IUser {
   loginStatus: number;
   info: IUserInfo;
-}
-
-export interface IState {
-  user: IUser;
 }
 
 const userInitialState: IUser = {
@@ -36,6 +38,7 @@ const userInitialState: IUser = {
     auth: 0,
     collections: [],
     lastLoginIp: "",
+    lastLoginAddress: "",
     qiniu: { server: "", token: "" },
     avatar: "",
     introduction: ""
@@ -54,6 +57,43 @@ export function user(state: IUser = userInitialState, action: IAction) {
       return {
         ...state,
         info: action.payload
+      };
+
+    default:
+      return state;
+  }
+}
+
+export interface IDataUser {
+  activation: number;
+  avatar: string;
+  banned: number;
+  _id: string;
+  username: string;
+  email: string;
+  auth: number;
+  created: string;
+  updated: string;
+  lastLoginIp: string;
+  lastLoginAddress: string;
+  lastLoginDate: string;
+  [propName: string]: any;
+}
+
+export interface IData {
+  userList: IDataUser[];
+}
+
+const dataInitialState = {
+  userList: []
+};
+
+export function data(state: IData = dataInitialState, action: IAction) {
+  switch (action.type) {
+    case types.SET_USER_LIST:
+      return {
+        ...state,
+        userList: action.payload
       };
 
     default:

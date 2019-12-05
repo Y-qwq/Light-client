@@ -14,3 +14,12 @@ export class loginAction {
     };
   };
 }
+
+export class adminAction {
+  public static setUserList = (payload: {}[]) => {
+    return {
+      type: types.SET_USER_LIST,
+      payload
+    };
+  };
+}

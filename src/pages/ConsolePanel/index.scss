@@ -25,6 +25,7 @@
     }
 
     &-content {
+        overflow-y: auto;
         position: relative;
         padding: 24px;
         background: #fff;

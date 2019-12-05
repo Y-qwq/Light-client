@@ -29,6 +29,7 @@ const UploadAvatar = forwardRef(
     const [loading, setLoading] = useState(false);
     // 图片hash值，用以控制头像刷新
     const [imgHash, setImgHash] = useState("");
+    const [getPicFail, setGetPicFail] = useState(false);
     const [token, setToken] = useState("");
 
     useEffect(() => {
@@ -61,11 +62,15 @@ const UploadAvatar = forwardRef(
 
     const avatar = useMemo(
       () =>
-        imgHash ? (
+        imgHash && !getPicFail ? (
           <Avatar
             size={size}
             src={`${QINIU_CLIENT}/avatar/${_id}?h=${imgHash}`}
             className={`loading-box-img`}
+            onError={() => {
+              setGetPicFail(true);
+              return true;
+            }}
           >
             {name ? name : "U"}
           </Avatar>
@@ -74,7 +79,7 @@ const UploadAvatar = forwardRef(
             {name ? name : "U"}
           </Avatar>
         ),
-      [name, imgHash, size, _id]
+      [name, imgHash, size, getPicFail, _id]
     );
 
     return (

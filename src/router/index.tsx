@@ -67,8 +67,22 @@ export const pcRouterList = [
   {
     path: "/admin/consolePanel",
     auth: 2,
-    exact: true,
-    component: lazy(() => import("@/pages/ConsolePanel"))
+    component: lazy(() => import("@/pages/ConsolePanel")),
+    routes: [
+      {
+        path: "/admin/consolePanel",
+        exact: true,
+        component: lazy(() => import("@/components/AdminHome"))
+      },
+      {
+        path: "/admin/consolePanel/userManage",
+        component: lazy(() => import("@/components/TotalUserManage"))
+      },
+      {
+        path: "/admin/consolePanel/releaseReadArticle",
+        component: lazy(() => import("@/components/ReleaseReadArticle"))
+      }
+    ]
   },
   {
     path: "/admin/login",

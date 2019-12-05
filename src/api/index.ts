@@ -65,4 +65,19 @@ export const updateUserInfo = (info: {}) => POST("/user/updateInfo", info);
 export const updateUserAvatar = (avatar: string) =>
   POST("/user/updateAvatar", { avatar });
 
+export const getAllUser = () => GET("/user/getAllUser");
+
+export const changeUserBanned = (_id: string, banned: number) =>
+  POST("/user/changeBanned", { _id, banned });
+
+export const changeUserAuth = (_id: string, auth: number) =>
+  POST("/user/changeAuth", { _id, auth });
+
+export const addAccount = (
+  username: string,
+  password: string,
+  email: string,
+  auth: number
+) => POST("/user/addAccount", { username, password, email, auth });
+
 export default { GET, POST };

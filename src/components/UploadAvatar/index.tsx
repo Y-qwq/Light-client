@@ -5,15 +5,13 @@ import React, {
   useEffect,
   forwardRef
 } from "react";
-import { UploadChangeParam } from "antd/lib/upload";
+import { QINIU_CLIENT, updateUserAvatar } from "@/api";
 import { UploadFile } from "antd/lib/upload/interface";
-import { Upload, Avatar, Icon } from "antd";
-import {
-  QINIU_SERVER,
-  getForceUploadToken,
-  QINIU_CLIENT,
-  updateUserAvatar
-} from "@/api";
+import { UploadChangeParam } from "antd/lib/upload";
+import QiniuUpload from "@/commom/QiniuUpload";
+import { loginAction } from "@/redux/action";
+import { useDispatch } from "react-redux";
+import { Avatar, Icon } from "antd";
 import "./index.scss";
 
 export interface IUploadAvatarProps {
@@ -26,11 +24,11 @@ export interface IUploadAvatarProps {
 
 const UploadAvatar = forwardRef(
   ({ _id, name, size = 64, onChange, value }: IUploadAvatarProps, ref: any) => {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     // 图片hash值，用以控制头像刷新
     const [imgHash, setImgHash] = useState("");
     const [getPicFail, setGetPicFail] = useState(false);
-    const [token, setToken] = useState("");
 
     useEffect(() => {
       if (value) setImgHash(value);
@@ -48,17 +46,13 @@ const UploadAvatar = forwardRef(
           if (res.data.type === "success") {
             setImgHash(hash);
             onChange && onChange(hash);
+            dispatch(loginAction.updateAvatarHash(hash));
             setLoading(false);
           }
         }
       },
-      [onChange]
+      [onChange, dispatch]
     );
-
-    const beforeUpload = useCallback(async () => {
-      const res = await getForceUploadToken("avatar/" + _id);
-      res.data.type === "success" && setToken(res.data.token);
-    }, [_id]);
 
     const avatar = useMemo(
       () =>
@@ -83,18 +77,13 @@ const UploadAvatar = forwardRef(
     );
 
     return (
-      <Upload
+      <QiniuUpload
         ref={ref}
         listType="picture"
         className="avatar-uploader"
-        showUploadList={false}
-        beforeUpload={beforeUpload}
-        action={QINIU_SERVER}
-        data={{
-          token: token,
-          key: `avatar/${_id}`
-        }}
         onChange={handleChange}
+        path={`avatar/${_id}`}
+        forceUpload={true}
       >
         <div className={`loading-box ${loading ? "loading" : null}`}>
           {avatar}
@@ -106,7 +95,7 @@ const UploadAvatar = forwardRef(
             />
           )}
         </div>
-      </Upload>
+      </QiniuUpload>
     );
   }
 );

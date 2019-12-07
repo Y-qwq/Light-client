@@ -80,4 +80,27 @@ export const addAccount = (
   auth: number
 ) => POST("/user/addAccount", { username, password, email, auth });
 
+export const getAraft = (type: string) => GET("/article/getAraft", { type });
+
+export const clearAraft = (_id: string) =>
+  POST("/article/clearAraft", { _id });
+
+export const saveAraft = (data: {
+  type: string;
+  _id: string;
+  title?: string;
+  summary?: string;
+  cover?: string;
+  content?: string;
+}) => POST("/article/saveAraft", data);
+
+export const writeArticle = (data: {
+  _id: string;
+  type: string;
+  title: string;
+  summary: string;
+  cover: string;
+  content: string;
+}) => POST("/article/write", data);
+
 export default { GET, POST };

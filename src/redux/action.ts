@@ -13,6 +13,12 @@ export class loginAction {
       payload
     };
   };
+  public static updateAvatarHash = (payload?: string) => {
+    return {
+      type: types.UPDATE_AVATAR_HSAH,
+      payload
+    };
+  };
 }
 
 export class adminAction {

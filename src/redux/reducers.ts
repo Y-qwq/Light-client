@@ -59,6 +59,15 @@ export function user(state: IUser = userInitialState, action: IAction) {
         info: action.payload
       };
 
+    case types.UPDATE_AVATAR_HSAH:
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          avatar: action.payload
+        }
+      };
+
     default:
       return state;
   }

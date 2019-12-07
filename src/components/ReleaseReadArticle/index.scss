@@ -1,0 +1,24 @@
+.release-read-article {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .button-box {
+        position: absolute;
+        right: 0;
+    }
+
+    .release-read-article-form {
+        position: absolute;
+        top: 50px;
+        left: 0;
+    }
+
+    .editor {
+        border: 1px solid #ccc;
+
+        .component-wrapper {
+            float: left;
+        }
+    }
+}

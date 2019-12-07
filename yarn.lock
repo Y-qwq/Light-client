@@ -2590,7 +2590,7 @@ braft-finder@^0.0.19:
   resolved "https://registry.npm.taobao.org/braft-finder/download/braft-finder-0.0.19.tgz#c324d82526ed3476a93de86cc9b407f4e188bc8d"
   integrity sha1-wyTYJSbtNHapPehsybQH9OGIvI0=
 
-braft-utils@^3.0.8:
+braft-utils@^3.0.12, braft-utils@^3.0.8:
   version "3.0.12"
   resolved "https://registry.npm.taobao.org/braft-utils/download/braft-utils-3.0.12.tgz#2b755ce1d8397d96b627b6767f74d07f25729d85"
   integrity sha1-K3Vc4dg5fZa2J7Z2f3TQfyVynYU=
@@ -2704,6 +2704,11 @@ bser@^2.0.0:
   integrity sha1-mseNPtXZFYBP2HrLFYvHlxR6Fxk=
   dependencies:
     node-int64 "^0.4.0"
+
+bson-objectid@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/bson-objectid/download/bson-objectid-1.3.0.tgz#f0f4c7c949fece975f12790510d75d7fe39fb456"
+  integrity sha1-8PTHyUn+zpdfEnkFENddf+OftFY=
 
 buffer-from@^1.0.0:
   version "1.1.1"

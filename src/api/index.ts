@@ -82,8 +82,10 @@ export const addAccount = (
 
 export const getAraft = (type: string) => GET("/article/getAraft", { type });
 
-export const clearAraft = (_id: string) =>
-  POST("/article/clearAraft", { _id });
+export const clearAraft = (_id: string) => POST("/article/clearAraft", { _id });
+
+export const updateAraftCover = (type: string, cover: string) =>
+  POST("/article/updateAraftCover", { type, cover });
 
 export const saveAraft = (data: {
   type: string;
@@ -102,5 +104,9 @@ export const writeArticle = (data: {
   cover: string;
   content: string;
 }) => POST("/article/write", data);
+
+export const qiniuRefresh = (urls: string[] | string) =>
+  POST("/qiniu/refresh", { urls });
+export const qiniuDelete = (key: string) => POST("/qiniu/delete", { key });
 
 export default { GET, POST };

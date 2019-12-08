@@ -10,7 +10,9 @@ import {
   saveAraft,
   getAraft,
   writeArticle,
-  clearAraft
+  clearAraft,
+  qiniuDelete,
+  updateAraftCover
 } from "@/api";
 import {
   UploadFile,
@@ -26,6 +28,7 @@ interface IReleaseReadArticleProps
     RouteConfigComponentProps {}
 
 let timer: any = null;
+const type = "read";
 
 const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
   (props: IReleaseReadArticleProps) => {
@@ -33,23 +36,29 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue }
     } = props;
     const [articleKey, setArticleKey] = useState(ObjectId());
+    const [cover, setCover] = useState<string | undefined>();
+
+    // 上传的文件名（路径），beforeUpload获取。
+    const [imagePathTemp, setImagePathTemp] = useState("");
+    // file的uid作为key
     const [imagePath, setImagePath] = useState<{ [propName: string]: string }>(
       {}
     );
-    const [coverStatus, setCoverStatus] = useState<
-      "error" | "success" | "done" | "uploading" | "removed" | undefined
-    >();
-    const [imagePathTemp, setImagePathTemp] = useState("");
+    // 发布中...
+    const [releaseLoading, setReleaseLoading] = useState(false);
+    // 焦点是否在编辑区（包含标题和概述）
     const [focus, setFocus] = useState(true);
     const editorRef = useRef();
 
     // init
     useEffect(() => {
       (async () => {
-        const res = await getAraft("read");
+        const res = await getAraft(type);
         if (res.data.type === "success") {
           const araft = res.data.araft;
-          araft.cover && setCoverStatus(araft.cover);
+          if (araft.cover) {
+            setCover(araft.cover);
+          }
           setArticleKey(araft._id);
           setFieldsValue({
             title: araft.title,
@@ -68,31 +77,28 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       html = /^(<p><\/p>)*?$/.test(html) ? undefined : html;
       const data: any = {
         _id: articleKey,
-        type: "read",
+        type,
         content: html,
         summary: summary && summary.trim(),
         title: title && title.trim()
       };
-      if (coverStatus === "success" || coverStatus === "done") {
-        data.cover = coverStatus;
+      if (cover) {
+        data.cover = cover;
       }
       return data;
-    }, [coverStatus, getFieldsValue, articleKey]);
+    }, [cover, getFieldsValue, articleKey]);
 
     // 保存草稿
     const handleSave = useCallback(async () => {
       const data = handleGetDate();
-      if (!data.title && !data.content && !data.summary && !coverStatus) {
+      if (!data.title && !data.content && !data.summary && !cover) {
         return;
       }
       const res = await saveAraft(data);
       if (res.data.type === "success") {
-        console.log("Save draft automatically");
+        console.log("Save draft automatically", data);
       }
-    }, [handleGetDate, coverStatus]);
-
-    const onFocus = useCallback(() => setFocus(true), []);
-    const onBlur = useCallback(() => setFocus(false), []);
+    }, [handleGetDate, cover]);
 
     // 自动保存 焦点离开整个编辑区则触发保存事件
     useEffect(() => {
@@ -111,20 +117,26 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
         summary: undefined,
         content: BraftEditor.createEditorState(null)
       });
-      setCoverStatus(undefined);
+      cover && qiniuDelete(cover);
+      setCover(undefined);
       setArticleKey(ObjectId());
-    }, [setFieldsValue]);
+    }, [cover, setFieldsValue]);
 
     const handleRelease = useCallback(async () => {
+      if (!cover) {
+        message.error("请上传封面！");
+      }
       // 点击发布按钮时,取消焦点离开导致的保存草稿操作(都发布了,还草稿个毛线)
       setFocus(true);
+      setReleaseLoading(true);
       // 发布
       const res = await writeArticle(handleGetDate());
       if (res.data.type === "success") {
         clear();
         message.success("发布成功!");
+        setReleaseLoading(false);
       }
-    }, [handleGetDate, clear]);
+    }, [handleGetDate, clear, cover]);
 
     const handleClear = useCallback(async () => {
       setFocus(true);
@@ -138,7 +150,7 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
     // 文件上传前获取文件信息，拼接路径并暂存
     const handleBeforeUpload = useCallback(
       (file: RcFile) => {
-        const key = `${articleKey}/${file.lastModified}/${file.name}`;
+        const key = `article/${articleKey}/${file.lastModified}/${file.name}`;
         setImagePath(preState => ({ ...preState, [file.uid]: key }));
         setImagePathTemp(key);
         return true;
@@ -146,7 +158,7 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       [articleKey]
     );
 
-    // 图片上传完成后获取图片
+    // 图片上传完成后编辑器获取图片
     const handleInsertImage = useCallback(
       ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
         if (status === "done") {
@@ -167,14 +179,20 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
 
     // 封面上传回调
     const handleCoverUploaded = useCallback(
-      ({ file: { status } }: UploadChangeParam<UploadFile<any>>) => {
-        setCoverStatus(status);
+      ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
         if (status === "success" || status === "done") {
-          handleSave();
+          if (cover) {
+            qiniuDelete(cover);
+          }
+          setCover(imagePath[uid]);
+          updateAraftCover(type, imagePath[uid]);
         }
       },
-      [handleSave]
+      [imagePath, cover]
     );
+
+    const onFocus = useCallback(() => setFocus(true), []);
+    const onBlur = useCallback(() => setFocus(false), []);
 
     const formItemLayout = {
       labelCol: {
@@ -194,7 +212,11 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
           <Button onClick={handleClear} style={{ marginRight: 10 }}>
             清除草稿
           </Button>
-          <Button type="primary" onClick={handleRelease}>
+          <Button
+            type="primary"
+            loading={releaseLoading}
+            onClick={handleRelease}
+          >
             发布文章
           </Button>
         </div>
@@ -247,21 +269,21 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
               />
             )}
           </Form.Item>
-          <Form.Item label="封面">
+          <Form.Item label="封面" required={true}>
             <QiniuUpload
               listType="picture"
-              path={`${articleKey}/cover`}
+              beforeUpload={handleBeforeUpload}
+              path={imagePathTemp}
               onChange={handleCoverUploaded}
-              forceUpload={true}
             >
-              {coverStatus === "done" || coverStatus === "success" ? (
+              {cover ? (
                 <img
-                  src={`${QINIU_CLIENT}/${articleKey}/cover`}
+                  src={`${QINIU_CLIENT}/${cover}`}
                   style={{ width: "100%" }}
                   alt="封面"
                 />
               ) : (
-                <Button loading={coverStatus === "uploading"}>上传封面</Button>
+                <Button loading={cover === "uploading"}>上传封面</Button>
               )}
             </QiniuUpload>
           </Form.Item>

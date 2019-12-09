@@ -80,7 +80,11 @@ export const pcRouterList = [
       },
       {
         path: "/admin/consolePanel/releaseReadArticle",
-        component: lazy(() => import("@/components/ReleaseReadArticle"))
+        component: lazy(() => import("@/pages/ReleaseRead"))
+      },
+      {
+        path: "/admin/consolePanel/releaseMusicArticle",
+        component: lazy(() => import("@/pages/ReleaseMusic"))
       }
     ]
   },

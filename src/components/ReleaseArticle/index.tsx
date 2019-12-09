@@ -1,7 +1,12 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { RouteConfigComponentProps } from "react-router-config";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo
+} from "react";
 import { FormComponentProps } from "antd/lib/form";
-import { Form, Input, Icon, Button, message } from "antd";
+import { Form, Input, Icon, Button, message, Select } from "antd";
 import QiniuUpload from "@/commom/QiniuUpload";
 import { ContentUtils } from "braft-utils";
 import BraftEditor from "braft-editor";
@@ -12,7 +17,10 @@ import {
   writeArticle,
   clearAraft,
   qiniuDelete,
-  updateAraftCover
+  updateAraftCover,
+  searchMusic,
+  getSongUrl,
+  updateAraftSong
 } from "@/api";
 import {
   UploadFile,
@@ -21,23 +29,24 @@ import {
 } from "antd/lib/upload/interface";
 import ObjectId from "bson-objectid";
 import "braft-editor/dist/index.css";
+import { LabeledValue } from "antd/lib/select";
+import { debounce } from "lodash";
 import "./index.scss";
 
-interface IReleaseReadArticleProps
-  extends FormComponentProps,
-    RouteConfigComponentProps {}
+interface IReleaseArticleProps extends FormComponentProps {
+  type?: "read" | "music" | "movie" | "fm";
+  children?: React.ReactChild;
+}
 
 let timer: any = null;
-const type = "read";
 
-const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
-  (props: IReleaseReadArticleProps) => {
-    const {
-      form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue }
-    } = props;
+const ReleaseArticle = Form.create<IReleaseArticleProps>()(
+  ({
+    form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue },
+    type = "read"
+  }: IReleaseArticleProps) => {
     const [articleKey, setArticleKey] = useState(ObjectId());
     const [cover, setCover] = useState<string | undefined>();
-
     // 上传的文件名（路径），beforeUpload获取。
     const [imagePathTemp, setImagePathTemp] = useState("");
     // file的uid作为key
@@ -48,6 +57,12 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
     const [releaseLoading, setReleaseLoading] = useState(false);
     // 焦点是否在编辑区（包含标题和概述）
     const [focus, setFocus] = useState(true);
+    const [selectPlaceholder, setSelectPlaceholder] = useState("搜索音乐！");
+    // 搜索歌曲列表
+    const [songs, setSongs] = useState([]);
+    // 草稿箱中的音乐ID
+    const [musicId, setMusicId] = useState();
+    const [audioUrl, setAudioUrl] = useState("");
     const editorRef = useRef();
 
     // init
@@ -56,28 +71,34 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
         const res = await getAraft(type);
         if (res.data.type === "success") {
           const araft = res.data.araft;
-          if (araft.cover) {
-            setCover(araft.cover);
-          }
+          const music = res.data.music;
+          setCover(araft.cover);
           setArticleKey(araft._id);
           setFieldsValue({
             title: araft.title,
             summary: araft.summary,
             content: BraftEditor.createEditorState(araft.content)
           });
+          if (music) {
+            setAudioUrl(`${QINIU_CLIENT}/music/${araft.music_id}.mp3`);
+            setSelectPlaceholder(`${music.name} - ${music.singers}`);
+            setMusicId(araft.music_id);
+          }
         }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // 拼接表单
+    // 拼接数据
     const handleGetDate = useCallback(() => {
-      const { title, content, summary } = getFieldsValue();
+      const { title, content, summary, music } = getFieldsValue();
       let html = content && content.toHTML();
       html = /^(<p><\/p>)*?$/.test(html) ? undefined : html;
+      const music_id = (music && music.key) || musicId;
       const data: any = {
         _id: articleKey,
         type,
+        music_id,
         content: html,
         summary: summary && summary.trim(),
         title: title && title.trim()
@@ -86,7 +107,7 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
         data.cover = cover;
       }
       return data;
-    }, [cover, getFieldsValue, articleKey]);
+    }, [cover, getFieldsValue, articleKey, type, musicId]);
 
     // 保存草稿
     const handleSave = useCallback(async () => {
@@ -110,21 +131,40 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       }
     }, [focus, handleSave]);
 
-    const clear = useCallback(() => {
-      setFocus(true);
-      setFieldsValue({
-        title: undefined,
-        summary: undefined,
-        content: BraftEditor.createEditorState(null)
-      });
-      cover && qiniuDelete(cover);
-      setCover(undefined);
-      setArticleKey(ObjectId());
-    }, [cover, setFieldsValue]);
+    // 清空编辑区
+    const clear = useCallback(async () => {
+      const res = await clearAraft(articleKey);
+      if (res.data.type === "success") {
+        setFocus(true);
+        setFieldsValue({
+          title: undefined,
+          summary: undefined,
+          music: undefined,
+          content: BraftEditor.createEditorState(null)
+        });
+        cover && qiniuDelete(cover);
+        setCover(undefined);
+        setMusicId(undefined);
+        setAudioUrl("");
+        setSongs([]);
+        setSelectPlaceholder("搜索音乐！");
+        setArticleKey(ObjectId());
+        return true;
+      } else {
+        message.error("删除草稿箱失败！");
+        return false;
+      }
+    }, [cover, setFieldsValue, articleKey]);
 
+    useEffect(() => {
+      console.log(selectPlaceholder);
+    }, [selectPlaceholder]);
+
+    // 发布文章
     const handleRelease = useCallback(async () => {
       if (!cover) {
         message.error("请上传封面！");
+        return;
       }
       // 点击发布按钮时,取消焦点离开导致的保存草稿操作(都发布了,还草稿个毛线)
       setFocus(true);
@@ -134,18 +174,17 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       if (res.data.type === "success") {
         clear();
         message.success("发布成功!");
-        setReleaseLoading(false);
       }
+      setReleaseLoading(false);
     }, [handleGetDate, clear, cover]);
 
+    // 手动执行清理
     const handleClear = useCallback(async () => {
       setFocus(true);
-      const res = await clearAraft(articleKey);
-      if (res.data.type === "success") {
-        clear();
-        message.success(res.data.message);
+      if (await clear()) {
+        message.error("清理草稿箱成功！");
       }
-    }, [articleKey, clear]);
+    }, [clear]);
 
     // 文件上传前获取文件信息，拼接路径并暂存
     const handleBeforeUpload = useCallback(
@@ -163,7 +202,7 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
       ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
         if (status === "done") {
           // @ts-ignore 插入图片时需要获取富文本的焦点，否则会报错
-          editorRef.current.focus();
+          editorRef.current.focus && editorRef.current.focus();
           setFieldsValue({
             content: ContentUtils.insertMedias(getFieldValue("content"), [
               {
@@ -181,19 +220,71 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
     const handleCoverUploaded = useCallback(
       ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
         if (status === "success" || status === "done") {
-          if (cover) {
-            qiniuDelete(cover);
-          }
+          cover && qiniuDelete(cover);
           setCover(imagePath[uid]);
           updateAraftCover(type, imagePath[uid]);
         }
       },
-      [imagePath, cover]
+      [imagePath, cover, type]
+    );
+
+    // 搜索歌曲
+    const handleSearch = useCallback(
+      debounce(async (value: string) => {
+        if (value) {
+          const res = await searchMusic(value);
+          if (res.status === 200) {
+            setSongs(res.data.result.songs);
+          } else {
+            setSongs([]);
+          }
+        }
+      }, 500),
+      []
+    );
+
+    // 选择搜索歌曲的回调
+    const handleSelectMusic = useCallback(
+      async (value: string | number | LabeledValue) => {
+        const key = (value as LabeledValue).key;
+        const info = (value as LabeledValue).label;
+        const res = await getSongUrl(key);
+        if (res.status === 200) {
+          const songUrl =
+            res.data &&
+            res.data.data &&
+            res.data.data[0] &&
+            res.data.data[0].url;
+          if (songUrl) {
+            setAudioUrl(songUrl);
+            setSelectPlaceholder(info as string);
+            updateAraftSong(key, songUrl);
+            handleSave();
+          } else {
+            message.warn("获取歌曲失败！");
+          }
+        }
+      },
+      [handleSave]
     );
 
     const onFocus = useCallback(() => setFocus(true), []);
     const onBlur = useCallback(() => setFocus(false), []);
 
+    // 歌曲选项列表
+    const selectOptions = useMemo(
+      () =>
+        songs &&
+        songs.map(({ id, name, artists }: any) => (
+          <Select.Option key={id}>{`${name} - ${artists.reduce(
+            (sum: string, cur: any) => `${sum ? sum + "," : ""}${cur.name}`,
+            ""
+          )}`}</Select.Option>
+        )),
+      [songs]
+    );
+
+    // 表单布局
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -228,13 +319,55 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
           <Form.Item label="标题">
             {getFieldDecorator("title", {
               rules: [{ required: true, message: "请输入标题！" }]
-            })(<Input onBlur={onBlur} onFocus={onFocus} />)}
+            })(
+              <Input
+                placeholder="请输入标题！"
+                onBlur={onBlur}
+                onFocus={onFocus}
+              />
+            )}
           </Form.Item>
           <Form.Item label="摘要">
             {getFieldDecorator("summary", {
               rules: [{ required: true, message: "请输入摘要！" }]
-            })(<Input onBlur={onBlur} onFocus={onFocus} />)}
+            })(
+              <Input
+                placeholder="请输入摘要！"
+                onBlur={onBlur}
+                onFocus={onFocus}
+              />
+            )}
           </Form.Item>
+          {type === "music" && (
+            <Form.Item label="歌曲">
+              {getFieldDecorator("music", {
+                rules: [{ required: true, message: "请选择音乐！" }]
+              })(
+                <Select
+                  showSearch
+                  labelInValue={true}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  placeholder={selectPlaceholder}
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSelect={handleSelectMusic}
+                  onSearch={handleSearch}
+                  notFoundContent={null}
+                >
+                  {selectOptions}
+                </Select>
+              )}
+            </Form.Item>
+          )}
+          {audioUrl && (
+            <Form.Item label="播放器">
+              <audio src={audioUrl} controls>
+                您的浏览器不支持播放！
+              </audio>
+            </Form.Item>
+          )}
           <Form.Item wrapperCol={{ span: 24 }}>
             {getFieldDecorator("content")(
               <BraftEditor
@@ -293,4 +426,4 @@ const ReleaseReadArticle = Form.create<IReleaseReadArticleProps>()(
   }
 );
 
-export default ReleaseReadArticle;
+export default ReleaseArticle;

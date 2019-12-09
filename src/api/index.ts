@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { message } from "antd";
+
+const HOST = "http://39.108.180.34";
 
 axios.defaults.baseURL = "http://127.0.0.1";
 
@@ -105,8 +107,23 @@ export const writeArticle = (data: {
   content: string;
 }) => POST("/article/write", data);
 
-export const qiniuRefresh = (urls: string[] | string) =>
-  POST("/qiniu/refresh", { urls });
+export const updateAraftSong = (music_id: string, url: string) =>
+  POST("/article/updateAraftSongUrl", { music_id, url });
+
+const music: AxiosInstance = axios.create({ baseURL: `${HOST}:3000` });
+export const searchMusic = (keywords: string) =>
+  music.get("/search", {
+    baseURL: `${HOST}:3000`,
+    params: { keywords }
+  });
+export const getSongUrl = (id: string) =>
+  music.get("/song/url", {
+    baseURL: `${HOST}:3000`,
+    params: { id, br: 128000 }
+  });
+
 export const qiniuDelete = (key: string) => POST("/qiniu/delete", { key });
+export const qiniuFetch = (url: string, key: string) =>
+  POST("/qiniu/fetch", { url, key });
 
 export default { GET, POST };

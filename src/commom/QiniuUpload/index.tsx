@@ -20,6 +20,7 @@ export interface IQiniuUpload {
   className?: string;
   listType?: "picture" | "text" | "picture-card" | undefined;
   token?: string;
+  accept?: string;
   forceUpload?: boolean;
 }
 const QiniuUpload = forwardRef(
@@ -32,7 +33,8 @@ const QiniuUpload = forwardRef(
       className,
       listType,
       token,
-      forceUpload
+      forceUpload,
+      accept
     }: IQiniuUpload,
     ref: any
   ) => {
@@ -63,7 +65,7 @@ const QiniuUpload = forwardRef(
         ref={ref}
         className={className}
         listType={listType}
-        accept="image/*"
+        accept={accept || "image/*"}
         showUploadList={false}
         action={QINIU_SERVER}
         beforeUpload={handleBeforeUpload}

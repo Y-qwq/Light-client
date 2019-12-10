@@ -17,7 +17,6 @@ import {
   writeArticle,
   clearAraft,
   qiniuDelete,
-  updateAraftCover,
   searchMusic,
   getSongUrl,
   updateAraftSong
@@ -27,10 +26,10 @@ import {
   UploadChangeParam,
   RcFile
 } from "antd/lib/upload/interface";
-import ObjectId from "bson-objectid";
-import "braft-editor/dist/index.css";
 import { LabeledValue } from "antd/lib/select";
 import { debounce } from "lodash";
+import ObjectId from "bson-objectid";
+import "braft-editor/dist/index.css";
 import "./index.scss";
 
 interface IReleaseArticleProps extends FormComponentProps {
@@ -45,16 +44,17 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
     form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue },
     type = "read"
   }: IReleaseArticleProps) => {
-    const [articleKey, setArticleKey] = useState(ObjectId());
+    const [articleId, setArticleId] = useState(ObjectId().toString());
     const [cover, setCover] = useState<string | undefined>();
     // 上传的文件名（路径），beforeUpload获取。
-    const [imagePathTemp, setImagePathTemp] = useState("");
+    const [filePathTemp, setFilePathTemp] = useState("");
     // file的uid作为key
-    const [imagePath, setImagePath] = useState<{ [propName: string]: string }>(
+    const [filePath, setFilePath] = useState<{ [propName: string]: string }>(
       {}
     );
     // 发布中...
     const [releaseLoading, setReleaseLoading] = useState(false);
+    const [uploadAudioLoading, setUploadAudioLoading] = useState(false);
     // 焦点是否在编辑区（包含标题和概述）
     const [focus, setFocus] = useState(true);
     const [selectPlaceholder, setSelectPlaceholder] = useState("搜索音乐！");
@@ -73,7 +73,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
           const araft = res.data.araft;
           const music = res.data.music;
           setCover(araft.cover);
-          setArticleKey(araft._id);
+          setArticleId(araft._id);
           setFieldsValue({
             title: araft.title,
             summary: araft.summary,
@@ -83,6 +83,9 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
             setAudioUrl(`${QINIU_CLIENT}/music/${araft.music_id}.mp3`);
             setSelectPlaceholder(`${music.name} - ${music.singers}`);
             setMusicId(araft.music_id);
+          }
+          if (type === "fm" && araft.fmUrl) {
+            setAudioUrl(`${QINIU_CLIENT}/${araft.fmUrl}`);
           }
         }
       })();
@@ -95,19 +98,22 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       let html = content && content.toHTML();
       html = /^(<p><\/p>)*?$/.test(html) ? undefined : html;
       const music_id = (music && music.key) || musicId;
+      const fmUrl =
+        type === "fm" && audioUrl
+          ? audioUrl.split(QINIU_CLIENT + "/")[1]
+          : undefined;
       const data: any = {
-        _id: articleKey,
+        _id: articleId,
         type,
+        cover,
+        fmUrl,
         music_id,
         content: html,
         summary: summary && summary.trim(),
         title: title && title.trim()
       };
-      if (cover) {
-        data.cover = cover;
-      }
       return data;
-    }, [cover, getFieldsValue, articleKey, type, musicId]);
+    }, [cover, getFieldsValue, articleId, type, musicId, audioUrl]);
 
     // 保存草稿
     const handleSave = useCallback(async () => {
@@ -131,9 +137,15 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       }
     }, [focus, handleSave]);
 
+    // 手动更新最新的数据到数据库
+    const updateLastData = useCallback(() => {
+      setFocus(true);
+      setFocus(false);
+    }, []);
+
     // 清空编辑区
     const clear = useCallback(async () => {
-      const res = await clearAraft(articleKey);
+      const res = await clearAraft(articleId);
       if (res.data.type === "success") {
         setFocus(true);
         setFieldsValue({
@@ -148,17 +160,13 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
         setAudioUrl("");
         setSongs([]);
         setSelectPlaceholder("搜索音乐！");
-        setArticleKey(ObjectId());
+        setArticleId(ObjectId().toString());
         return true;
       } else {
         message.error("删除草稿箱失败！");
         return false;
       }
-    }, [cover, setFieldsValue, articleKey]);
-
-    useEffect(() => {
-      console.log(selectPlaceholder);
-    }, [selectPlaceholder]);
+    }, [cover, setFieldsValue, articleId]);
 
     // 发布文章
     const handleRelease = useCallback(async () => {
@@ -182,19 +190,19 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
     const handleClear = useCallback(async () => {
       setFocus(true);
       if (await clear()) {
-        message.error("清理草稿箱成功！");
+        message.success("清理草稿箱成功！");
       }
     }, [clear]);
 
     // 文件上传前获取文件信息，拼接路径并暂存
     const handleBeforeUpload = useCallback(
       (file: RcFile) => {
-        const key = `article/${articleKey}/${file.lastModified}/${file.name}`;
-        setImagePath(preState => ({ ...preState, [file.uid]: key }));
-        setImagePathTemp(key);
+        const key = `article/${articleId}/${file.lastModified}/${file.name}`;
+        setFilePath(preState => ({ ...preState, [file.uid]: key }));
+        setFilePathTemp(key);
         return true;
       },
-      [articleKey]
+      [articleId]
     );
 
     // 图片上传完成后编辑器获取图片
@@ -207,13 +215,28 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
             content: ContentUtils.insertMedias(getFieldValue("content"), [
               {
                 type: "IMAGE",
-                url: QINIU_CLIENT + "/" + imagePath[uid]
+                url: QINIU_CLIENT + "/" + filePath[uid]
               }
             ])
           });
         }
       },
-      [getFieldValue, setFieldsValue, imagePath]
+      [getFieldValue, setFieldsValue, filePath]
+    );
+
+    // FM文件上传完后的回调
+    const handleFmUploaded = useCallback(
+      ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
+        if (status === "uploading") {
+          setUploadAudioLoading(true);
+        }
+        if (status === "done") {
+          setUploadAudioLoading(false);
+          setAudioUrl(QINIU_CLIENT + "/" + filePath[uid]);
+          updateLastData();
+        }
+      },
+      [filePath, updateLastData]
     );
 
     // 封面上传回调
@@ -221,11 +244,11 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       ({ file: { uid, status } }: UploadChangeParam<UploadFile<any>>) => {
         if (status === "success" || status === "done") {
           cover && qiniuDelete(cover);
-          setCover(imagePath[uid]);
-          updateAraftCover(type, imagePath[uid]);
+          setCover(filePath[uid]);
+          updateLastData();
         }
       },
-      [imagePath, cover, type]
+      [filePath, cover, updateLastData]
     );
 
     // 搜索歌曲
@@ -259,13 +282,13 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
             setAudioUrl(songUrl);
             setSelectPlaceholder(info as string);
             updateAraftSong(key, songUrl);
-            handleSave();
+            updateLastData();
           } else {
             message.warn("获取歌曲失败！");
           }
         }
       },
-      [handleSave]
+      [updateLastData]
     );
 
     const onFocus = useCallback(() => setFocus(true), []);
@@ -361,6 +384,18 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
               )}
             </Form.Item>
           )}
+          {type === "fm" && (
+            <Form.Item label="音频">
+              <QiniuUpload
+                accept="audio/*"
+                beforeUpload={handleBeforeUpload}
+                onChange={handleFmUploaded}
+                path={filePathTemp}
+              >
+                <Button loading={uploadAudioLoading}>上传FM音频</Button>
+              </QiniuUpload>
+            </Form.Item>
+          )}
           {audioUrl && (
             <Form.Item label="播放器">
               <audio src={audioUrl} controls>
@@ -386,7 +421,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
                       <QiniuUpload
                         beforeUpload={handleBeforeUpload}
                         onChange={handleInsertImage}
-                        path={imagePathTemp}
+                        path={filePathTemp}
                       >
                         <button
                           type="button"
@@ -406,7 +441,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
             <QiniuUpload
               listType="picture"
               beforeUpload={handleBeforeUpload}
-              path={imagePathTemp}
+              path={filePathTemp}
               onChange={handleCoverUploaded}
             >
               {cover ? (

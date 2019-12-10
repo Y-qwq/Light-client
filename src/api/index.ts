@@ -86,9 +86,6 @@ export const getAraft = (type: string) => GET("/article/getAraft", { type });
 
 export const clearAraft = (_id: string) => POST("/article/clearAraft", { _id });
 
-export const updateAraftCover = (type: string, cover: string) =>
-  POST("/article/updateAraftCover", { type, cover });
-
 export const saveAraft = (data: {
   type: string;
   _id: string;

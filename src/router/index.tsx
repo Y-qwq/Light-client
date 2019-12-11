@@ -93,6 +93,10 @@ export const pcRouterList = [
       {
         path: "/admin/consolePanel/releaseFmArticle",
         component: lazy(() => import("@/pages/admin/ReleaseFm"))
+      },
+      {
+        path: "/admin/consolePanel/SystemManage",
+        component: lazy(() => import("@/pages/admin/SystemManage"))
       }
     ]
   },

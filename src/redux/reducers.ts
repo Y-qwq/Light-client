@@ -21,6 +21,8 @@ export interface IUserInfo {
   username: string;
   avatar?: string;
   introduction?: string;
+  music_account?: string;
+  music_password?: string;
 }
 
 export interface IUser {
@@ -41,7 +43,9 @@ const userInitialState: IUser = {
     lastLoginAddress: "",
     qiniu: { server: "", token: "" },
     avatar: "",
-    introduction: ""
+    introduction: "",
+    music_account: "",
+    music_password: ""
   }
 };
 

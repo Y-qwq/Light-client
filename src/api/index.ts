@@ -102,6 +102,7 @@ export const writeArticle = (data: {
   summary: string;
   cover: string;
   content: string;
+  [propName: string]: any;
 }) => POST("/article/write", data);
 
 export const updateAraftSong = (music_id: string, url: string) =>
@@ -116,8 +117,27 @@ export const searchMusic = (keywords: string) =>
 export const getSongUrl = (id: string) =>
   music.get("/song/url", {
     baseURL: `${HOST}:3000`,
-    params: { id, br: 128000 }
+    params: { id, br: 128000 },
+    withCredentials: true
   });
+export const musicLogin = (account: string, password: string) => {
+  if (!/@/.test(account)) {
+    return music.get("/login/cellphone", {
+      params: { phone: account, password },
+      withCredentials: true
+    });
+  } else {
+    return music.get("/login/email", {
+      params: { email: account, password },
+      withCredentials: true
+    });
+  }
+};
+
+export const updateMusicAccount = (
+  music_account: string,
+  music_password: string
+) => POST("/user/updateMusicAccount", { music_account, music_password });
 
 export const qiniuDelete = (key: string) => POST("/qiniu/delete", { key });
 export const qiniuFetch = (url: string, key: string) =>

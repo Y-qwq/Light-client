@@ -157,6 +157,9 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         case "3-4-1":
           history.push("/admin/consolePanel/releaseFmArticle");
           break;
+        case "4":
+          history.push("/admin/consolePanel/SystemManage");
+          break;
       }
     },
     [history]

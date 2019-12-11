@@ -1,10 +1,10 @@
 import React, { lazy } from "react";
 import { Redirect } from "react-router-dom";
 
-import Login from "../components/Login";
-import Forget from "../components/Forget";
-import LoginOut from "../components/LoginOut";
-import Register from "../components/Register";
+import Login from "@/components/Login";
+import Forget from "@/components/Forget";
+import LoginOut from "@/components/LoginOut";
+import Register from "@/components/Register";
 
 // 用户(手机)路由配置
 export const mobileRouterList = [
@@ -16,21 +16,21 @@ export const mobileRouterList = [
   {
     path: "/user/all",
     auth: 1,
-    component: lazy(() => import("../pages/UserAll"))
+    component: lazy(() => import("@/pages/user/UserAll"))
   },
   {
     path: "/user/light",
     auth: 1,
-    component: lazy(() => import("../pages/Light"))
+    component: lazy(() => import("@/pages/user/Light"))
   },
   {
     path: "/user/info",
     auth: 1,
-    component: lazy(() => import("../pages/UserInfo"))
+    component: lazy(() => import("@/pages/user/UserInfo"))
   },
   {
     path: "/user/loginRegister",
-    component: lazy(() => import("../pages/LoginRegister")),
+    component: lazy(() => import("@/pages/user/LoginRegister")),
     routes: [
       {
         path: "/user/loginRegister/login",
@@ -62,43 +62,43 @@ export const pcRouterList = [
   {
     path: "/admin/changeInfo",
     auth: 2,
-    component: lazy(() => import("@/pages/ChangeInfo"))
+    component: lazy(() => import("@/pages/admin/ChangeInfo"))
   },
   {
     path: "/admin/consolePanel",
     auth: 2,
-    component: lazy(() => import("@/pages/ConsolePanel")),
+    component: lazy(() => import("@/pages/admin/ConsolePanel")),
     routes: [
       {
         path: "/admin/consolePanel",
         exact: true,
-        component: lazy(() => import("@/components/AdminHome"))
+        component: lazy(() => import("@/pages/admin/Home"))
       },
       {
         path: "/admin/consolePanel/userManage",
-        component: lazy(() => import("@/components/TotalUserManage"))
+        component: lazy(() => import("@/pages/admin/TotalUserManage"))
       },
       {
         path: "/admin/consolePanel/releaseReadArticle",
-        component: lazy(() => import("@/pages/ReleaseRead"))
+        component: lazy(() => import("@/pages/admin/ReleaseRead"))
       },
       {
         path: "/admin/consolePanel/releaseMusicArticle",
-        component: lazy(() => import("@/pages/ReleaseMusic"))
+        component: lazy(() => import("@/pages/admin/ReleaseMusic"))
       },
       {
         path: "/admin/consolePanel/releaseMovieArticle",
-        component: lazy(() => import("@/pages/ReleaaseMovie"))
+        component: lazy(() => import("@/pages/admin/ReleaaseMovie"))
       },
       {
         path: "/admin/consolePanel/releaseFmArticle",
-        component: lazy(() => import("@/pages/ReleaseFm"))
+        component: lazy(() => import("@/pages/admin/ReleaseFm"))
       }
     ]
   },
   {
     path: "/admin/login",
-    component: lazy(() => import("@/pages/AdminLogin")),
+    component: lazy(() => import("@/pages/admin/Login")),
     routes: [
       {
         path: "/admin/login",

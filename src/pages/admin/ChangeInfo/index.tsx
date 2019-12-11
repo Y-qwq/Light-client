@@ -16,7 +16,7 @@ interface IChangeInfoProps
 
 const { Item } = Form;
 
-const ChangeInfo = Form.create<IChangeInfoProps>()(
+const AdminChangeInfo = Form.create<IChangeInfoProps>()(
   (props: IChangeInfoProps) => {
     const history = useHistory();
     const dispatch = useDispatch();
@@ -134,4 +134,4 @@ const ChangeInfo = Form.create<IChangeInfoProps>()(
   }
 );
 
-export default ChangeInfo;
+export default AdminChangeInfo;

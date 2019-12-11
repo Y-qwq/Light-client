@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from "react";
 import { Table, Avatar, Tag, Input, Button, Icon } from "antd";
 import useFetchUserList from "@/hooks/useFetchUserList";
+import AddAccountModal from "@/commom/AddAccountModal";
 import BannedSwitch from "@/commom/BannedSwitch";
 import Highlighter from "react-highlight-words";
 import { IDataUser } from "@/redux/reducers";
-import { QINIU_CLIENT } from "@/api";
-import AuthTap from "@/commom/AuthTap";
 import { ColumnProps } from "antd/es/table";
+import AuthTap from "@/commom/AuthTap";
+import { QINIU_CLIENT } from "@/api";
 import "./index.scss";
-import AddAccountModal from "@/commom/AddAccountModal";
 
 const TotalUserManage: React.SFC = () => {
   const [userList] = useFetchUserList();

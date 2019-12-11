@@ -102,7 +102,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
         type === "fm" && audioUrl
           ? audioUrl.split(QINIU_CLIENT + "/")[1]
           : undefined;
-      const data: any = {
+      const data = {
         _id: articleId,
         type,
         cover,
@@ -118,14 +118,15 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
     // 保存草稿
     const handleSave = useCallback(async () => {
       const data = handleGetDate();
-      if (!data.title && !data.content && !data.summary && !cover) {
+      const { _id, type, ...others } = data;
+      if (Object.keys(others).length === 0) {
         return;
       }
       const res = await saveAraft(data);
       if (res.data.type === "success") {
         console.log("Save draft automatically", data);
       }
-    }, [handleGetDate, cover]);
+    }, [handleGetDate]);
 
     // 自动保存 焦点离开整个编辑区则触发保存事件
     useEffect(() => {
@@ -178,7 +179,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       setFocus(true);
       setReleaseLoading(true);
       // 发布
-      const res = await writeArticle(handleGetDate());
+      const res = await writeArticle(handleGetDate() as any);
       if (res.data.type === "success") {
         clear();
         message.success("发布成功!");

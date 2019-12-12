@@ -171,21 +171,42 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
 
     // 发布文章
     const handleRelease = useCallback(async () => {
-      if (!cover) {
+      const articleData = handleGetDate();
+      if (!articleData.cover) {
         message.error("请上传封面！");
+        return;
+      }
+      if (!articleData.summary) {
+        message.error("请填写摘要！");
+        return;
+      }
+      if (!articleData.content) {
+        message.error("请填写内容！");
+        return;
+      }
+      if (!articleData.title) {
+        message.error("请填写标题！");
+        return;
+      }
+      if (articleData.type === "fm" && !articleData.fmUrl) {
+        message.error("请上传FM音频！");
+        return;
+      }
+      if (articleData.type === "music" && !articleData.music_id) {
+        message.error("请搜索选择音乐！");
         return;
       }
       // 点击发布按钮时,取消焦点离开导致的保存草稿操作(都发布了,还草稿个毛线)
       setFocus(true);
       setReleaseLoading(true);
       // 发布
-      const res = await writeArticle(handleGetDate() as any);
+      const res = await writeArticle(articleData as any);
       if (res.data.type === "success") {
         clear();
         message.success("发布成功!");
       }
       setReleaseLoading(false);
-    }, [handleGetDate, clear, cover]);
+    }, [handleGetDate, clear]);
 
     // 手动执行清理
     const handleClear = useCallback(async () => {

@@ -1,34 +1,34 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Icon, Modal, Button, Radio } from "antd";
 import { FormComponentProps } from "antd/lib/form";
-import "./index.scss";
 import { addAccount } from "@/api";
-import useFetchUserList from "@/hooks/useFetchUserList";
+import "./index.scss";
 
 interface IAddAccountModal extends FormComponentProps {
   onCancel: () => void;
   visible: boolean;
+  onUpdate: Function;
 }
 
 const AddAccountModal = Form.create<IAddAccountModal>()(
   ({
     visible,
     onCancel,
+    onUpdate,
     form: { getFieldDecorator, getFieldsValue }
   }: IAddAccountModal) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [, updateUserList] = useFetchUserList();
 
     const handleConfirm = useCallback(async () => {
       setConfirmLoading(true);
       const { username, password, email, auth } = getFieldsValue();
       const res = await addAccount(username, password, email, auth);
       if (res.data.type === "success") {
-        updateUserList();
+        onUpdate();
         setConfirmLoading(false);
         onCancel();
       }
-    }, [getFieldsValue, onCancel, updateUserList]);
+    }, [getFieldsValue, onCancel, onUpdate]);
 
     const verifyPassword = useCallback(
       (_rule: string, value: string, cb: Function) => {

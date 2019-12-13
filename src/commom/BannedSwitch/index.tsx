@@ -1,30 +1,28 @@
 import React, { useState, useCallback } from "react";
 import { Switch } from "antd";
-import { changeUserBanned } from "@/api";
-import useFetchUserList from "@/hooks/useFetchUserList";
+import { SwitchChangeEventHandler } from "antd/lib/switch";
 
 interface IBannedSwitch {
-  banned: number;
-  _id: string;
+  checked: boolean;
+  onClick: SwitchChangeEventHandler | undefined;
 }
 
-const BannedSwitch = ({ banned, _id }: IBannedSwitch) => {
-  const [, updateUserList] = useFetchUserList();
+const BannedSwitch = ({ checked, onClick }: IBannedSwitch) => {
   const [loading, setLoading] = useState(false);
 
-  const handleSwitchBanned = useCallback(() => {
-    setLoading(true);
-    (async () => {
-      const res = await changeUserBanned(_id, banned ? 0 : 1);
-      if (res.data.type === "success") {
-        await updateUserList();
+  const handleSwitchBanned = useCallback(
+    async (checked: boolean, event: MouseEvent) => {
+      setLoading(true);
+      if (onClick) {
+        await onClick(checked, event);
       }
       setLoading(false);
-    })();
-  }, [_id, banned, updateUserList]);
+    },
+    [onClick]
+  );
 
   return (
-    <Switch loading={loading} checked={!banned} onClick={handleSwitchBanned} />
+    <Switch loading={loading} checked={checked} onClick={handleSwitchBanned} />
   );
 };
 

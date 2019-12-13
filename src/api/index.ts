@@ -143,4 +143,20 @@ export const qiniuDelete = (key: string) => POST("/qiniu/delete", { key });
 export const qiniuFetch = (url: string, key: string) =>
   POST("/qiniu/fetch", { url, key });
 
+export const getArticleList = (
+  type: "read" | "fm" | "music" | "movie",
+  count: number,
+  skip: number = 0,
+  isUser?: boolean,
+  sorterKey?: string,
+  sorterMethod?: "descend" | "ascend"
+) =>
+  GET("/article/get", { type, count, skip, isUser, sorterKey, sorterMethod });
+
+export const changeArticleBanned = (_id: string, banned: number) =>
+  POST("/article/banned", { _id, banned });
+
+export const changeArticlePass = (_id: string, pass: number) =>
+  POST("/article/pass", { _id, pass });
+
 export default { GET, POST };

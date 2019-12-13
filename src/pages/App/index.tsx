@@ -50,7 +50,7 @@ const App: React.SFC = () => {
       delete axios.defaults.headers.common["Authorization"];
       dispatch(loginAction.changeLoginStatus(0));
     }
-  }, [dispatch]);
+  }, [dispatch, neteaseCloudMusicLogin]);
 
   // 检测token有效期,自动登录,并设置Authorization。
   useEffect(() => {

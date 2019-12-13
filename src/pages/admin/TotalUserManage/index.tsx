@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { QINIU_CLIENT, changeUserAuth, changeUserBanned } from "@/api";
 import { Table, Avatar, Tag, Input, Button, Icon } from "antd";
 import useFetchUserList from "@/hooks/useFetchUserList";
 import AddAccountModal from "@/commom/AddAccountModal";
@@ -6,16 +7,46 @@ import BannedSwitch from "@/commom/BannedSwitch";
 import Highlighter from "react-highlight-words";
 import { IDataUser } from "@/redux/reducers";
 import { ColumnProps } from "antd/es/table";
-import AuthTap from "@/commom/AuthTap";
-import { QINIU_CLIENT } from "@/api";
+import SelectTap, {
+  ISelectTagData,
+  ISelectTagOnSelect
+} from "@/commom/SelectTap";
 import "./index.scss";
 
+const authTapData: ISelectTagData = [
+  { name: "用户", color: "blue", key: 1 },
+  { name: "作者", color: "purple", key: 2 },
+  { name: "管理员", color: "magenta", key: 3 }
+];
+
+const PAGE_SIZE = 6;
+
 const TotalUserManage: React.SFC = () => {
-  const [userList] = useFetchUserList();
+  const [userList, updateUserList] = useFetchUserList();
   const [searchText, setSearchText] = useState<string>("");
   const [searchedColumn, setSearchedColumn] = useState("");
 
   const [ModalVisible, setModalVisible] = useState(false);
+
+  const handleSelectTag = useCallback(
+    async ({ key }: ISelectTagOnSelect, _id: string) => {
+      const res = await changeUserAuth(_id, +key + 1);
+      if (res.data.type === "success") {
+        updateUserList();
+      }
+    },
+    [updateUserList]
+  );
+
+  const handleBannedClick = useCallback(
+    async (_id: string, key: number) => {
+      const res = await changeUserBanned(_id, key ? 0 : 1);
+      if (res.data.type === "success") {
+        await updateUserList();
+      }
+    },
+    [updateUserList]
+  );
 
   const handleSearch = useCallback(
     (
@@ -118,7 +149,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "用户名",
       dataIndex: "username",
-      key: "username",
       width: "10%",
       ellipsis: true,
       ...getColumnSearchProps("username")
@@ -126,7 +156,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "邮箱",
       dataIndex: "email",
-      key: "email",
       width: "15%",
       ellipsis: true,
       ...getColumnSearchProps("email")
@@ -134,7 +163,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "权限",
       dataIndex: "auth",
-      key: "auth",
       width: "7%",
       filters: [
         { text: "管理员", value: "3" },
@@ -143,26 +171,27 @@ const TotalUserManage: React.SFC = () => {
       ],
       onFilter: (value: string, data: IDataUser) => data.auth === +value,
       render: (auth: number, { _id }: IDataUser) => (
-        <AuthTap auth={auth} _id={_id} />
+        <SelectTap
+          current={auth}
+          data={authTapData}
+          onSelect={p => handleSelectTag(p, _id)}
+        />
       )
     },
     {
       title: "最后登录IP",
       dataIndex: "lastLoginIp",
-      key: "lastLoginIp",
       width: "10%",
       ...getColumnSearchProps("lastLoginIp")
     },
     {
       title: "最后登录地址",
       dataIndex: "lastLoginAddress",
-      key: "lastLoginAddress",
       ...getColumnSearchProps("lastLoginAddress")
     },
     {
       title: "最后登录时间",
       dataIndex: "lastLoginDate",
-      key: "lastLoginDate",
       sorter: (a: IDataUser, b: IDataUser) =>
         +new Date(a.lastLoginDate) - +new Date(b.lastLoginDate),
       sortDirections: ["descend", "ascend"],
@@ -172,7 +201,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "创建时间",
       dataIndex: "created",
-      key: "created",
       width: "9%",
       sorter: (a: IDataUser, b: IDataUser) =>
         +new Date(a.created) - +new Date(b.created),
@@ -182,7 +210,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "激活状态",
       dataIndex: "activation",
-      key: "activation",
       width: "9%",
       filters: [
         { text: "激活", value: "1" },
@@ -199,7 +226,6 @@ const TotalUserManage: React.SFC = () => {
     {
       title: "是否有效",
       dataIndex: "banned",
-      key: "banned",
       width: "9%",
       filters: [
         { text: "封禁", value: "1" },
@@ -208,7 +234,10 @@ const TotalUserManage: React.SFC = () => {
       onFilter: (value: string, data: IDataUser) => data.banned === +value,
       filterMultiple: false,
       render: (banned: number, { _id }: IDataUser) => (
-        <BannedSwitch banned={banned} _id={_id} />
+        <BannedSwitch
+          checked={!banned}
+          onClick={() => handleBannedClick(_id, banned)}
+        />
       )
     }
   ];
@@ -225,12 +254,13 @@ const TotalUserManage: React.SFC = () => {
       <AddAccountModal
         visible={ModalVisible}
         onCancel={() => setModalVisible(false)}
+        onUpdate={updateUserList}
       />
       {userList && (
         <Table
           columns={columns}
           dataSource={userList}
-          pagination={{ pageSize: 6, hideOnSinglePage: true }}
+          pagination={{ pageSize: PAGE_SIZE, hideOnSinglePage: true }}
           rowKey="_id"
         />
       )}

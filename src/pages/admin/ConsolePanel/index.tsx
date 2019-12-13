@@ -148,14 +148,26 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         case "3-1-1":
           history.push("/admin/consolePanel/releaseReadArticle");
           break;
+        case "3-1-2":
+          history.push("/admin/consolePanel/list/read");
+          break;
         case "3-2-1":
           history.push("/admin/consolePanel/releaseMusicArticle");
+          break;
+        case "3-2-2":
+          history.push("/admin/consolePanel/list/music");
           break;
         case "3-3-1":
           history.push("/admin/consolePanel/releaseMovieArticle");
           break;
+        case "3-3-2":
+          history.push("/admin/consolePanel/list/movie");
+          break;
         case "3-4-1":
           history.push("/admin/consolePanel/releaseFmArticle");
+          break;
+        case "3-4-2":
+          history.push("/admin/consolePanel/list/fm");
           break;
         case "4":
           history.push("/admin/consolePanel/SystemManage");

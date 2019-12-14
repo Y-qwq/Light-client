@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
+import { RouteConfigComponentProps } from "react-router-config";
 import SelectTap, { ISelectTagData } from "@/commom/SelectTap";
 import { SorterResult } from "antd/lib/table/interface";
 import BannedSwitch from "@/commom/BannedSwitch";
@@ -12,7 +13,7 @@ import {
 } from "@/api";
 import "./index.scss";
 
-export interface IArticleList {
+export interface IArticleListData {
   _id: string;
   author_id: string;
   author: string;
@@ -36,7 +37,11 @@ const passTapData: ISelectTagData = [
   { name: "未过", color: "red", key: 0 }
 ];
 
-const ListRead: React.SFC = () => {
+interface IArticleList extends RouteConfigComponentProps {
+  type?: "read" | "fm" | "music" | "movie";
+}
+
+const ArticleList = ({ type = "read" }: IArticleList) => {
   const [articleList, setArticleList] = useState([]);
 
   const [sorterKey, setSorterKey] = useState("");
@@ -51,10 +56,10 @@ const ListRead: React.SFC = () => {
   const fetchData = useCallback(async () => {
     let res;
     if (!sorterMethod) {
-      res = await getArticleList("read", PAGE_SIZE, page, false);
+      res = await getArticleList(type, PAGE_SIZE, page, false);
     } else {
       res = await getArticleList(
-        "read",
+        type,
         PAGE_SIZE,
         page,
         false,
@@ -67,7 +72,7 @@ const ListRead: React.SFC = () => {
       setTotal(+res.data.total);
     }
     setLoading(false);
-  }, [page, sorterKey, sorterMethod]);
+  }, [page, sorterKey, sorterMethod, type]);
 
   // 初始化和页数更改时触发
   useEffect(() => {
@@ -95,7 +100,7 @@ const ListRead: React.SFC = () => {
   );
 
   const handleChange = useCallback(
-    ({ current }, _, { field, order }: SorterResult<IArticleList>) => {
+    ({ current }, _, { field, order }: SorterResult<IArticleListData>) => {
       if (sorterKey !== field || sorterMethod !== order) {
         setLoading(true);
         setSorterKey(field);
@@ -109,7 +114,7 @@ const ListRead: React.SFC = () => {
     [page, sorterKey, sorterMethod]
   );
 
-  const columns: ColumnProps<IArticleList>[] = [
+  const columns: ColumnProps<IArticleListData>[] = [
     {
       title: "标题",
       dataIndex: "title",
@@ -228,4 +233,4 @@ const ListRead: React.SFC = () => {
   );
 };
 
-export default ListRead;
+export default ArticleList;

@@ -1,7 +1,13 @@
-import React, { useCallback, useMemo, Suspense } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  Suspense,
+  useEffect,
+  useState
+} from "react";
 import { RouteConfigComponentProps } from "react-router-config";
 import { Layout, Menu, Icon, Avatar, Dropdown } from "antd";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import renderRoutes from "@/router/renderRoutes";
 import { useSelector } from "react-redux";
 import { IState } from "@/redux/reducers";
@@ -111,9 +117,38 @@ const menuList: IMenuList = [
   }
 ];
 
+const routeMap = new Map([
+  ["1", "/admin/consolePanel"],
+  ["2", "/admin/consolePanel/userManage"],
+  ["3-1-1", "/admin/consolePanel/releaseMusicArticle"],
+  ["3-1-2", "/admin/consolePanel/list/read"],
+  ["3-2-1", "/admin/consolePanel/releaseMusicArticle"],
+  ["3-2-2", "/admin/consolePanel/list/music"],
+  ["3-3-1", "/admin/consolePanel/releaseMovieArticle"],
+  ["3-3-2", "/admin/consolePanel/list/movie"],
+  ["3-4-1", "/admin/consolePanel/releaseFmArticle"],
+  ["3-4-2", "/admin/consolePanel/list/fm"],
+  ["4", "/admin/consolePanel/SystemManage"]
+]);
+
 const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
   const history = useHistory();
+  const location = useLocation();
+  const [curMenuKey, setCurMenuKey] = useState("");
   const user = useSelector((state: IState) => state.user.info);
+  const [articleType, setArticleType] = useState({ type: "read" });
+
+  useEffect(() => {
+    // 设置菜单当前激活项
+    routeMap.forEach((value, key) => {
+      if (value === location.pathname) {
+        setCurMenuKey(key);
+      }
+    });
+    // 根据url /list/后面的内容选择不同类型的文章
+    const type = location.pathname.match(/(?<=\/list\/)(?:.+?)(?=(\/|$))/);
+    type && setArticleType({ type: type[0] });
+  }, [location.pathname]);
 
   const handleLoginOut = useCallback(() => {
     delete axios.defaults.headers.common["Authorization"];
@@ -138,41 +173,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
 
   const handleItemClick = useCallback(
     ({ key }) => {
-      switch (key) {
-        case "1":
-          history.push("/admin/consolePanel");
-          break;
-        case "2":
-          history.push("/admin/consolePanel/userManage");
-          break;
-        case "3-1-1":
-          history.push("/admin/consolePanel/releaseReadArticle");
-          break;
-        case "3-1-2":
-          history.push("/admin/consolePanel/list/read");
-          break;
-        case "3-2-1":
-          history.push("/admin/consolePanel/releaseMusicArticle");
-          break;
-        case "3-2-2":
-          history.push("/admin/consolePanel/list/music");
-          break;
-        case "3-3-1":
-          history.push("/admin/consolePanel/releaseMovieArticle");
-          break;
-        case "3-3-2":
-          history.push("/admin/consolePanel/list/movie");
-          break;
-        case "3-4-1":
-          history.push("/admin/consolePanel/releaseFmArticle");
-          break;
-        case "3-4-2":
-          history.push("/admin/consolePanel/list/fm");
-          break;
-        case "4":
-          history.push("/admin/consolePanel/SystemManage");
-          break;
-      }
+      history.push(routeMap.get(key) || "/");
     },
     [history]
   );
@@ -221,7 +222,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         <p className="console-panel-logo">Light</p>
         <Menu
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          selectedKeys={[curMenuKey]}
           className="console-panel-menu"
           onClick={handleItemClick}
         >
@@ -233,7 +234,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         <Content className="console-panel-content-box">
           <div className="console-panel-content">
             <Suspense fallback={<Loading />}>
-              {route && renderRoutes(route.routes, route.authed)}
+              {route && renderRoutes(route.routes, route.authed, articleType)}
             </Suspense>
           </div>
         </Content>

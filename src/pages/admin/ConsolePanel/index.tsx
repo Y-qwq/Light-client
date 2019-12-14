@@ -120,13 +120,13 @@ const menuList: IMenuList = [
 const routeMap = new Map([
   ["1", "/admin/consolePanel"],
   ["2", "/admin/consolePanel/userManage"],
-  ["3-1-1", "/admin/consolePanel/releaseMusicArticle"],
+  ["3-1-1", "/admin/consolePanel/release/readArticle"],
   ["3-1-2", "/admin/consolePanel/list/read"],
-  ["3-2-1", "/admin/consolePanel/releaseMusicArticle"],
+  ["3-2-1", "/admin/consolePanel/release/musicArticle"],
   ["3-2-2", "/admin/consolePanel/list/music"],
-  ["3-3-1", "/admin/consolePanel/releaseMovieArticle"],
+  ["3-3-1", "/admin/consolePanel/release/movieArticle"],
   ["3-3-2", "/admin/consolePanel/list/movie"],
-  ["3-4-1", "/admin/consolePanel/releaseFmArticle"],
+  ["3-4-1", "/admin/consolePanel/release/fmArticle"],
   ["3-4-2", "/admin/consolePanel/list/fm"],
   ["4", "/admin/consolePanel/SystemManage"]
 ]);
@@ -136,7 +136,9 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
   const location = useLocation();
   const [curMenuKey, setCurMenuKey] = useState("");
   const user = useSelector((state: IState) => state.user.info);
-  const [articleType, setArticleType] = useState({ type: "read" });
+  const [routeProps, setRouteProps] = useState<{ type?: string }>({
+    type: "read"
+  });
 
   useEffect(() => {
     // 设置菜单当前激活项
@@ -145,9 +147,12 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         setCurMenuKey(key);
       }
     });
-    // 根据url /list/后面的内容选择不同类型的文章
-    const type = location.pathname.match(/(?<=\/list\/)(?:.+?)(?=(\/|$))/);
-    type && setArticleType({ type: type[0] });
+    // 根据url /list/xxx或者/releaseXxxxArticle 的内容设置不同类型的文章
+    let type: any = location.pathname.match(/(?<=\/list\/)(?:.+?)(?=(\/|$))/);
+    if (!type)
+      type = location.pathname.match(/(?<=\/release\/)(?:.+?)(?=Article)/);
+    type = type ? type[0].toLowerCase() : undefined;
+    setRouteProps({ type });
   }, [location.pathname]);
 
   const handleLoginOut = useCallback(() => {
@@ -234,7 +239,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         <Content className="console-panel-content-box">
           <div className="console-panel-content">
             <Suspense fallback={<Loading />}>
-              {route && renderRoutes(route.routes, route.authed, articleType)}
+              {route && renderRoutes(route.routes, route.authed, routeProps)}
             </Suspense>
           </div>
         </Content>

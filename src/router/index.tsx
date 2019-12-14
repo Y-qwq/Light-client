@@ -83,20 +83,8 @@ export const pcRouterList = [
         component: lazy(() => import("@/pages/admin/ArticleList"))
       },
       {
-        path: "/admin/consolePanel/releaseReadArticle",
-        component: lazy(() => import("@/pages/admin/ReleaseRead"))
-      },
-      {
-        path: "/admin/consolePanel/releaseMusicArticle",
-        component: lazy(() => import("@/pages/admin/ReleaseMusic"))
-      },
-      {
-        path: "/admin/consolePanel/releaseMovieArticle",
-        component: lazy(() => import("@/pages/admin/ReleaaseMovie"))
-      },
-      {
-        path: "/admin/consolePanel/releaseFmArticle",
-        component: lazy(() => import("@/pages/admin/ReleaseFm"))
+        path: "/admin/consolePanel/release/",
+        component: lazy(() => import("@/pages/admin/ReleaseArticle"))
       },
       {
         path: "/admin/consolePanel/SystemManage",

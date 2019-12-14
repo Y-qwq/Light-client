@@ -11,7 +11,6 @@ import SelectTap, {
   ISelectTagData,
   ISelectTagOnSelect
 } from "@/commom/SelectTap";
-import "./index.scss";
 
 const authTapData: ISelectTagData = [
   { name: "用户", color: "blue", key: 1 },

@@ -7,9 +7,13 @@ import React, {
 } from "react";
 import { FormComponentProps } from "antd/lib/form";
 import { Form, Input, Icon, Button, message, Select } from "antd";
+import { RouteConfigComponentProps } from "react-router-config";
 import QiniuUpload from "@/commom/QiniuUpload";
 import { ContentUtils } from "braft-utils";
 import BraftEditor from "braft-editor";
+import { LabeledValue } from "antd/lib/select";
+import { debounce } from "lodash";
+import ObjectId from "bson-objectid";
 import {
   QINIU_CLIENT,
   saveAraft,
@@ -26,15 +30,13 @@ import {
   UploadChangeParam,
   RcFile
 } from "antd/lib/upload/interface";
-import { LabeledValue } from "antd/lib/select";
-import { debounce } from "lodash";
-import ObjectId from "bson-objectid";
 import "braft-editor/dist/index.css";
 import "./index.scss";
 
-interface IReleaseArticleProps extends FormComponentProps {
+interface IReleaseArticleProps
+  extends FormComponentProps,
+    RouteConfigComponentProps {
   type?: "read" | "music" | "movie" | "fm";
-  children?: React.ReactChild;
 }
 
 let timer: any = null;

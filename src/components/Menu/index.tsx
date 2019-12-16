@@ -37,7 +37,7 @@ const Menu: React.SFC = () => {
         if (loginStatus === 0) {
           history.push("/user/loginRegister/loginout");
         } else {
-          history.push("/user/info");
+          history.push("/user/me");
         }
         return;
       }

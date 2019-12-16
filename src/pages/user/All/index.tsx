@@ -1,7 +1,7 @@
 import React from "react";
 
-const UserAll: React.SFC = () => {
+const All: React.SFC = () => {
   return <h1>USER_ALL</h1>;
 };
 
-export default UserAll;
+export default All;

@@ -43,7 +43,8 @@ const App: React.SFC = () => {
       const user = data.user;
       dispatch(loginAction.changeLoginStatus(+user.auth));
       dispatch(loginAction.setUserInfo(user));
-      user.music_account &&
+      !isMobile &&
+        user.music_account &&
         user.music_password &&
         neteaseCloudMusicLogin(user.music_account, user.music_password);
     } else {

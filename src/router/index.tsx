@@ -16,7 +16,7 @@ export const mobileRouterList = [
   {
     path: "/user/all",
     auth: 1,
-    component: lazy(() => import("@/pages/user/UserAll"))
+    component: lazy(() => import("@/pages/user/All"))
   },
   {
     path: "/user/light",
@@ -24,9 +24,9 @@ export const mobileRouterList = [
     component: lazy(() => import("@/pages/user/Light"))
   },
   {
-    path: "/user/info",
+    path: "/user/me",
     auth: 1,
-    component: lazy(() => import("@/pages/user/UserInfo"))
+    component: lazy(() => import("@/pages/user/Me"))
   },
   {
     path: "/user/loginRegister",

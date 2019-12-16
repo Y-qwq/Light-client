@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { QINIU_CLIENT, changeUserAuth, changeUserBanned } from "@/api";
 import { Table, Avatar, Tag, Input, Button, Icon } from "antd";
 import useFetchUserList from "@/hooks/useFetchUserList";
-import AddAccountModal from "@/commom/AddAccountModal";
+import AddAccountModal from "@/components/AddAccountModal";
 import BannedSwitch from "@/commom/BannedSwitch";
 import Highlighter from "react-highlight-words";
 import { IDataUser } from "@/redux/reducers";

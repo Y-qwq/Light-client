@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { Redirect } from "react-router-dom";
 
+import Main from "@/pages/user/Main";
 import Login from "@/components/Login";
 import Forget from "@/components/Forget";
 import LoginOut from "@/components/LoginOut";
@@ -14,39 +15,45 @@ export const mobileRouterList = [
     render: () => <Redirect to="/user/all" />
   },
   {
-    path: "/user/all",
-    auth: 1,
-    component: lazy(() => import("@/pages/user/All"))
-  },
-  {
-    path: "/user/light",
-    auth: 1,
-    component: lazy(() => import("@/pages/user/Light"))
-  },
-  {
-    path: "/user/me",
-    auth: 1,
-    component: lazy(() => import("@/pages/user/Me"))
-  },
-  {
-    path: "/user/loginRegister",
-    component: lazy(() => import("@/pages/user/LoginRegister")),
+    path: "/user",
+    component: Main,
     routes: [
       {
-        path: "/user/loginRegister/login",
-        component: Login
+        path: "/user/all",
+        auth: 1,
+        component: lazy(() => import("@/pages/user/All"))
       },
       {
-        path: "/user/loginRegister/forget",
-        component: Forget
+        path: "/user/light",
+        auth: 1,
+        component: lazy(() => import("@/pages/user/Light"))
       },
       {
-        path: "/user/loginRegister/loginout",
-        component: LoginOut
+        path: "/user/me",
+        auth: 1,
+        component: lazy(() => import("@/pages/user/Me"))
       },
       {
-        path: "/user/loginRegister/register",
-        component: Register
+        path: "/user/loginRegister",
+        component: lazy(() => import("@/pages/user/LoginRegister")),
+        routes: [
+          {
+            path: "/user/loginRegister/login",
+            component: Login
+          },
+          {
+            path: "/user/loginRegister/forget",
+            component: Forget
+          },
+          {
+            path: "/user/loginRegister/loginout",
+            component: LoginOut
+          },
+          {
+            path: "/user/loginRegister/register",
+            component: Register
+          }
+        ]
       }
     ]
   }

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { RouteConfigComponentProps } from "react-router-config";
 import { useLocation, useHistory } from "react-router-dom";
-import MyIcon from "@/assets/MyIcon";
+import renderRoutes from "@/router/renderRoutes";
 import { useSelector } from "react-redux";
 import { IState } from "@/redux/reducers";
+import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
-const Menu: React.SFC = () => {
+const UserMain = ({ route }: RouteConfigComponentProps) => {
   const location = useLocation();
   const history = useHistory();
   const { loginStatus } = useSelector((state: IState) => ({
@@ -21,7 +23,7 @@ const Menu: React.SFC = () => {
 
   useEffect(() => {
     const pathname = location.pathname;
-    if (/^\/user\/(info|loginRegister).*/.test(pathname)) {
+    if (/^\/user\/(me|loginRegister).*/.test(pathname)) {
       setAction(2);
     } else if (/^\/user\/light.*/.test(pathname)) {
       setAction(1);
@@ -47,22 +49,25 @@ const Menu: React.SFC = () => {
   );
 
   return (
-    <div className="menu">
-      {menuList.map(({ icon, name }, idx) => (
-        <div
-          className="menu-box"
-          key={idx}
-          onClick={() => handleMenuClick(idx)}
-        >
-          <MyIcon
-            type={icon + (idx === action ? "-action" : "")}
-            className="menu-icon"
-          />
-          <p className="menu-name">{name}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      {route && renderRoutes(route.routes, route.authed)}
+      <div className="menu">
+        {menuList.map(({ icon, name }, idx) => (
+          <div
+            className="menu-box"
+            key={idx}
+            onClick={() => handleMenuClick(idx)}
+          >
+            <MyIcon
+              type={icon + (idx === action ? "-action" : "")}
+              className="menu-icon"
+            />
+            <p className="menu-name">{name}</p>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
-export default Menu;
+export default UserMain;

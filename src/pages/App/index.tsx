@@ -8,13 +8,12 @@ import { useLocation } from "react-router-dom";
 import { loginAction } from "@/redux/action";
 import checkMobile from "@/util/checkMobile";
 import { IState } from "@/redux/reducers";
-import Menu from "@/components/Menu";
+import { message } from "antd";
 import axios from "axios";
 import "@/assets/theme/_antdTheme.less";
 import "@/assets/theme/_base.scss";
 import "@/assets/font/font.css";
 import "./index.scss";
-import { message } from "antd";
 
 const isMobile = checkMobile();
 
@@ -79,7 +78,6 @@ const App: React.SFC = () => {
       ) : (
         <Loading />
       )}
-      {isMobile && <Menu />}
     </>
   );
 };

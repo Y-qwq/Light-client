@@ -38,7 +38,7 @@ const passTapData: ISelectTagData = [
 ];
 
 interface IArticleList extends RouteConfigComponentProps {
-  type?: "read" | "fm" | "music" | "movie";
+  type?: "read" | "fm" | "music" | "movie" | "image";
 }
 
 const ArticleList = ({ type = "read" }: IArticleList) => {

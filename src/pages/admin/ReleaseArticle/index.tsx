@@ -36,7 +36,7 @@ import "./index.scss";
 interface IReleaseArticleProps
   extends FormComponentProps,
     RouteConfigComponentProps {
-  type?: "read" | "music" | "movie" | "fm";
+  type?: "read" | "music" | "movie" | "fm" | "image";
 }
 
 let timer: any = null;
@@ -436,28 +436,32 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
                 excludeControls={["headings", "media"]}
                 onBlur={onBlur}
                 onFocus={onFocus}
-                extendControls={[
-                  "separator",
-                  {
-                    key: "insert",
-                    type: "component",
-                    component: (
-                      <QiniuUpload
-                        beforeUpload={handleBeforeUpload}
-                        onChange={handleInsertImage}
-                        path={filePathTemp}
-                      >
-                        <button
-                          type="button"
-                          className="control-item button upload-button"
-                          data-title="插入图片"
-                        >
-                          <Icon type="picture" theme="filled" />
-                        </button>
-                      </QiniuUpload>
-                    )
-                  }
-                ]}
+                extendControls={
+                  type !== "read"
+                    ? [
+                        "separator",
+                        {
+                          key: "insert",
+                          type: "component",
+                          component: (
+                            <QiniuUpload
+                              beforeUpload={handleBeforeUpload}
+                              onChange={handleInsertImage}
+                              path={filePathTemp}
+                            >
+                              <button
+                                type="button"
+                                className="control-item button upload-button"
+                                data-title="插入图片"
+                              >
+                                <Icon type="picture" theme="filled" />
+                              </button>
+                            </QiniuUpload>
+                          )
+                        }
+                      ]
+                    : undefined
+                }
               />
             )}
           </Form.Item>

@@ -82,26 +82,34 @@ const menuList: IMenuList = [
       },
       {
         key: "3-2",
-        content: <span className="nav-text">音乐文章管理</span>,
+        content: <span className="nav-text">图文文章管理</span>,
         childents: [
           { key: "3-2-1", content: "文章发布" },
-          { key: "3-2-2", content: "音乐列表" }
+          { key: "3-2-2", content: "阅读列表" }
         ]
       },
       {
         key: "3-3",
-        content: <span className="nav-text">影视文章管理</span>,
+        content: <span className="nav-text">音乐文章管理</span>,
         childents: [
           { key: "3-3-1", content: "文章发布" },
-          { key: "3-3-2", content: "影视列表" }
+          { key: "3-3-2", content: "音乐列表" }
         ]
       },
       {
         key: "3-4",
-        content: <span className="nav-text">电台文章管理</span>,
+        content: <span className="nav-text">影视文章管理</span>,
         childents: [
           { key: "3-4-1", content: "文章发布" },
-          { key: "3-4-2", content: "电台列表" }
+          { key: "3-4-2", content: "影视列表" }
+        ]
+      },
+      {
+        key: "3-5",
+        content: <span className="nav-text">电台文章管理</span>,
+        childents: [
+          { key: "3-5-1", content: "文章发布" },
+          { key: "3-5-2", content: "电台列表" }
         ]
       }
     ]
@@ -122,12 +130,14 @@ const routeMap = new Map([
   ["2", "/admin/consolePanel/userManage"],
   ["3-1-1", "/admin/consolePanel/release/readArticle"],
   ["3-1-2", "/admin/consolePanel/list/read"],
-  ["3-2-1", "/admin/consolePanel/release/musicArticle"],
-  ["3-2-2", "/admin/consolePanel/list/music"],
-  ["3-3-1", "/admin/consolePanel/release/movieArticle"],
-  ["3-3-2", "/admin/consolePanel/list/movie"],
-  ["3-4-1", "/admin/consolePanel/release/fmArticle"],
-  ["3-4-2", "/admin/consolePanel/list/fm"],
+  ["3-2-1", "/admin/consolePanel/release/imageArticle"],
+  ["3-2-2", "/admin/consolePanel/list/image"],
+  ["3-3-1", "/admin/consolePanel/release/musicArticle"],
+  ["3-3-2", "/admin/consolePanel/list/music"],
+  ["3-4-1", "/admin/consolePanel/release/movieArticle"],
+  ["3-4-2", "/admin/consolePanel/list/movie"],
+  ["3-5-1", "/admin/consolePanel/release/fmArticle"],
+  ["3-5-2", "/admin/consolePanel/list/fm"],
   ["4", "/admin/consolePanel/SystemManage"]
 ]);
 

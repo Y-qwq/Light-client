@@ -1,0 +1,73 @@
+.me {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #eee;
+
+    &-header {
+        width: 100vw;
+        height: 30vh;
+        color: white;
+        position: relative;
+
+        background-image: url("http://q1f9rvxhs.bkt.clouddn.com/light/bg-user-info.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        filter: grayscale(0.3);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        &-setting {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-size: 24px;
+            color: white;
+        }
+
+        &-avatar {
+            border: 1px solid white;
+        }
+
+        &-name {
+            font-size: 23px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        &-introduction {
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    &-collections {
+        margin-top: 10px;
+        width: 100vw;
+        background-color: #fff;
+
+        &-title {
+            font-size: 16px;
+            display: inline-block;
+            margin: 5px 0 0 7.5vw;
+        }
+
+        &-icons {
+            font-size: 40px;
+            padding: 10px 0 15px;
+        }
+
+        &-content {
+            width: 85vw;
+            margin-left: 7.5vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}

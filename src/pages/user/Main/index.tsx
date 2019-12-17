@@ -16,7 +16,7 @@ const UserMain = ({ route }: RouteConfigComponentProps) => {
   const menuList = [
     { to: "/user/all", name: "ALL", icon: "all2" },
     { to: "/user/light", name: "LIGHT", icon: "light" },
-    { to: "/user", name: "ME", icon: "me" }
+    { to: "/user/me", name: "ME", icon: "me" }
   ];
 
   const [action, setAction] = useState(0);

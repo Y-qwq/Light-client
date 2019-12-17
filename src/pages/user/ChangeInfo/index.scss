@@ -1,0 +1,35 @@
+.change-info {
+    width: 100vw;
+    height: 100vh;
+    background-color: #eee;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+
+    &-bar {
+        position: static !important;
+        background-color: #fff !important;
+        color: black !important;
+        margin-bottom: 10px;
+        box-shadow: none !important;
+    }
+
+    &-list {
+        background-color: #fff;
+    }
+
+    &-form {
+        width: 100%;
+        flex: 1;
+        background-color: #fff;
+        padding: 15px;
+
+        .MuiTextField-root {
+            width: 100% !important;
+            margin-bottom: 10px;
+        }
+    }
+}

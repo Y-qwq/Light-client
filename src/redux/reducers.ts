@@ -60,7 +60,7 @@ export function user(state: IUser = userInitialState, action: IAction) {
     case types.SET_USER_INFO:
       return {
         ...state,
-        info: action.payload
+        info: { ...state.info, ...action.payload }
       };
 
     case types.UPDATE_AVATAR_HSAH:

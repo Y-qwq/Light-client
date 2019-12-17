@@ -31,7 +31,13 @@ export const mobileRouterList = [
       {
         path: "/user/me",
         auth: 1,
-        component: lazy(() => import("@/pages/user/Me"))
+        component: lazy(() => import("@/pages/user/Me")),
+        routes: [
+          {
+            path: "/user/me/changeInfo",
+            component: lazy(() => import("@/pages/user/ChangeInfo"))
+          }
+        ]
       },
       {
         path: "/user/loginRegister",

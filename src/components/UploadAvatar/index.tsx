@@ -20,14 +20,18 @@ export interface IUploadAvatarProps {
   size?: number;
   onChange?: Function;
   value?: string;
+  hash?: String;
 }
 
 const UploadAvatar = forwardRef(
-  ({ _id, name, size = 64, onChange, value }: IUploadAvatarProps, ref: any) => {
+  (
+    { _id, name, size = 64, onChange, value, hash = "" }: IUploadAvatarProps,
+    ref: any
+  ) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     // 图片hash值，用以控制头像刷新
-    const [imgHash, setImgHash] = useState("");
+    const [imgHash, setImgHash] = useState(hash);
     const [getPicFail, setGetPicFail] = useState(false);
 
     useEffect(() => {
@@ -85,7 +89,7 @@ const UploadAvatar = forwardRef(
         path={`avatar/${_id}`}
         forceUpload={true}
       >
-        <div className={`loading-box ${loading ? "loading" : null}`}>
+        <div className={`loading-box ${loading ? "loading" : ""}`}>
           {avatar}
           {loading && (
             <Icon

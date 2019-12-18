@@ -2190,6 +2190,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-infinite-scroller@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/@types/react-infinite-scroller/download/@types/react-infinite-scroller-1.2.1.tgz#1cd747ef8f50d3c883e375c0491a906e5436fcb2"
+  integrity sha1-HNdH749Q08iD43XASRqQblQ2/LI=
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-redux@^7.1.5":
   version "7.1.5"
   resolved "https://registry.npm.taobao.org/@types/react-redux/download/@types/react-redux-7.1.5.tgz#c7a528d538969250347aa53c52241051cf886bd3"
@@ -10955,6 +10962,13 @@ react-highlight-words@^0.16.0:
   dependencies:
     highlight-words-core "^1.2.0"
     memoize-one "^4.0.0"
+    prop-types "^15.5.8"
+
+react-infinite-scroller@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npm.taobao.org/react-infinite-scroller/download/react-infinite-scroller-1.2.4.tgz#f67eaec4940a4ce6417bebdd6e3433bfc38826e9"
+  integrity sha1-9n6uxJQKTOZBe+vdbjQzv8OIJuk=
+  dependencies:
     prop-types "^15.5.8"
 
 react-is@^16.6.0, react-is@^16.8.4, react-is@^16.9.0:

@@ -2,10 +2,13 @@ import React, { lazy } from "react";
 import { Redirect } from "react-router-dom";
 
 import Main from "@/pages/user/Main";
+
 import Login from "@/components/Login";
 import Forget from "@/components/Forget";
 import LoginOut from "@/components/LoginOut";
 import Register from "@/components/Register";
+
+const Article = lazy(() => import("@/pages/user/Article"));
 
 // 用户(手机)路由配置
 export const mobileRouterList = [
@@ -26,7 +29,13 @@ export const mobileRouterList = [
       {
         path: "/user/light",
         auth: 1,
-        component: lazy(() => import("@/pages/user/Light"))
+        component: lazy(() => import("@/pages/user/Light")),
+        routes: [
+          {
+            path: "/user/light/article",
+            component: Article
+          }
+        ]
       },
       {
         path: "/user/me",

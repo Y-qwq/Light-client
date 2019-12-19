@@ -49,7 +49,7 @@ const Light = ({ route }: RouteConfigComponentProps) => {
 
   useEffect(() => {
     (async () => {
-      const res = await getArticleList("all", 20);
+      const res = await getArticleList("recommend", 20);
       if (res.data.type === "success") {
         setData(res.data.list || []);
       } else {

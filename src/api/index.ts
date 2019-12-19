@@ -144,7 +144,7 @@ export const qiniuFetch = (url: string, key: string) =>
   POST("/qiniu/fetch", { url, key });
 
 export const getArticleList = (
-  type: "read" | "fm" | "music" | "movie" | "image" | "all",
+  type: "read" | "fm" | "music" | "movie" | "image" | "all" | "recommend",
   count: number,
   skip: number = 0,
   isUser?: boolean,
@@ -158,6 +158,9 @@ export const changeArticleBanned = (_id: string, banned: number) =>
 
 export const changeArticlePass = (_id: string, pass: number) =>
   POST("/article/pass", { _id, pass });
+
+export const changeArticleRecommend = (_id: string, recommend: number) =>
+  POST("/article/recommend", { _id, recommend });
 
 export const getArticleDetail = (_id: string) =>
   GET("/article/detail", { _id });

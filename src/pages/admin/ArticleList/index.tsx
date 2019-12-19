@@ -9,9 +9,11 @@ import {
   getArticleList,
   QINIU_CLIENT,
   changeArticlePass,
-  changeArticleBanned
+  changeArticleBanned,
+  changeArticleRecommend
 } from "@/api";
 import "./index.scss";
+import { async } from "q";
 
 export interface IArticleListData {
   _id: string;
@@ -22,6 +24,7 @@ export interface IArticleListData {
   cover: string;
   created: string;
   pass: number;
+  recommend: number;
   collection_number: number;
   comment_number: number;
   reading_number: number;
@@ -92,6 +95,16 @@ const ArticleList = ({ type = "read" }: IArticleList) => {
   const changeBanned = useCallback(
     async (_id: string, banned: number) => {
       const res = await changeArticleBanned(_id, banned);
+      if (res.data.type === "success") {
+        fetchData();
+      }
+    },
+    [fetchData]
+  );
+
+  const changeRecommend = useCallback(
+    async (_id: string, recommend: number) => {
+      const res = await changeArticleRecommend(_id, recommend);
       if (res.data.type === "success") {
         fetchData();
       }
@@ -190,9 +203,9 @@ const ArticleList = ({ type = "read" }: IArticleList) => {
       render: created => new Date(created).toLocaleString()
     },
     {
-      title: "审阅状态",
+      title: "审阅",
       dataIndex: "pass",
-      width: "9%",
+      width: "7%",
       sorter: true,
       render: (pass, { _id }) => (
         <SelectTap
@@ -203,14 +216,26 @@ const ArticleList = ({ type = "read" }: IArticleList) => {
       )
     },
     {
-      title: "是否有效",
+      title: "推荐",
+      dataIndex: "recommend",
+      width: "7%",
+      sorter: true,
+      render: (recommend, { _id }) => (
+        <BannedSwitch
+          checked={recommend}
+          onClick={async () => await changeRecommend(_id, recommend ? 0 : 1)}
+        />
+      )
+    },
+    {
+      title: "有效",
       dataIndex: "banned",
-      width: "9%",
+      width: "7%",
       sorter: true,
       render: (banned, { _id }) => (
         <BannedSwitch
           checked={!banned}
-          onClick={() => changeBanned(_id, banned ? 0 : 1)}
+          onClick={async () => await changeBanned(_id, banned ? 0 : 1)}
         />
       )
     }

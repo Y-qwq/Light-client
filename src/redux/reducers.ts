@@ -14,6 +14,7 @@ export interface IUserInfo {
   _id: string;
   auth: number;
   collections: string[];
+  stars: string[];
   email: string;
   lastLoginIp: string;
   lastLoginAddress: string;
@@ -39,6 +40,7 @@ const userInitialState: IUser = {
     username: "",
     auth: 0,
     collections: [],
+    stars: [],
     lastLoginIp: "",
     lastLoginAddress: "",
     qiniu: { server: "", token: "" },

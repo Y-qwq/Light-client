@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { RouteConfigComponentProps } from "react-router-config";
+import { useHistory, useLocation } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
 import HideOnScroll from "@/commom/HideOnScroll";
+import renderRoutes from "@/router/renderRoutes";
 import { List, message, Badge } from "antd";
+import Loading from "@/commom/Loading";
 import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
-import { useHistory } from "react-router";
-import { RouteConfigComponentProps } from "react-router-config";
-import renderRoutes from "@/router/renderRoutes";
 
 interface IListData {
   _id: string;
@@ -42,13 +43,14 @@ const translateTime = (time: string) => {
 
 const Light = ({ route }: RouteConfigComponentProps) => {
   const history = useHistory();
-  const [data, setData] = useState<IListData[]>([]);
+  const location = useLocation();
+  const [data, setData] = useState<IListData[]>();
+  const [stopScroll, setStopScroll] = useState(false);
 
   useEffect(() => {
     (async () => {
       const res = await getArticleList("all", 20);
       if (res.data.type === "success") {
-        console.log(res.data.list);
         setData(res.data.list || []);
       } else {
         message.error("获取数据失败!");
@@ -56,9 +58,17 @@ const Light = ({ route }: RouteConfigComponentProps) => {
     })();
   }, []);
 
+  useEffect(() => {
+    if (/^\/user\/light\/article\/.*?$/.test(location.pathname)) {
+      setStopScroll(true);
+    } else {
+      setStopScroll(false);
+    }
+  }, [location]);
+
   const readArticle = useCallback(
     (_id: string) => {
-      history.push("/user/light/article", { _id });
+      history.push(`/user/light/article/${_id}`);
     },
     [history]
   );
@@ -72,64 +82,76 @@ const Light = ({ route }: RouteConfigComponentProps) => {
   );
 
   return (
-    <div className="light">
+    <>
       {route && renderRoutes(route.routes, route.authed)}
-      <HideOnScroll>
-        <header className="light-header">
-          <p className="light-header-logo">Light</p>
-          <MyIcon type="zoom" className="light-header-search-icon" />
-        </header>
-      </HideOnScroll>
-      <List
-        className="light-list"
-        dataSource={data}
-        renderItem={item => (
-          <List.Item key={item._id} onClick={() => readArticle(item._id)}>
-            <div className="light-item">
-              <p className="light-item-title">{item.title}</p>
-              <p className="light-item-type-author">{`${typeMap.get(
-                item.type
-              )} ╱ ${item.author}`}</p>
-              <img
-                src={`${QINIU_CLIENT}/${item.cover}`}
-                alt="cover"
-                className="light-item-cover"
-              />
-              <p className="light-item-summary">{item.summary}</p>
-              <div className="light-item-footer">
-                <p className="light-item-time">{translateTime(item.created)}</p>
-                <div className="light-item-icons">
-                  <Badge
-                    count={
-                      <p style={{ fontSize: 10 }}>{item.collection_number}</p>
-                    }
-                    offset={[0, 3]}
-                    showZero
-                  >
-                    <MyIcon
-                      type="xingxing"
-                      className="light-item-icons-icon"
-                      onClick={e => handleIcons(e, "collection")}
-                    />
-                  </Badge>
-                  <Badge
-                    count={<p style={{ fontSize: 10 }}>{item.star_number}</p>}
-                    offset={[0, 3]}
-                    showZero
-                  >
-                    <MyIcon
-                      type="heart"
-                      className="light-item-icons-icon"
-                      onClick={e => handleIcons(e, "star")}
-                    />
-                  </Badge>
+      <div className="light" style={{ overflow: stopScroll ? "hidden" : "" }}>
+        <HideOnScroll>
+          <header className="light-header">
+            <p className="light-header-logo">Light</p>
+            <MyIcon type="zoom" className="light-header-search-icon" />
+          </header>
+        </HideOnScroll>
+        {data ? (
+          <List
+            className="light-list"
+            dataSource={data}
+            renderItem={item => (
+              <List.Item key={item._id} onClick={() => readArticle(item._id)}>
+                <div className="light-item">
+                  <p className="light-item-title">{item.title}</p>
+                  <p className="light-item-type-author">{`${typeMap.get(
+                    item.type
+                  )} ╱ ${item.author}`}</p>
+                  <img
+                    src={`${QINIU_CLIENT}/${item.cover}`}
+                    alt="cover"
+                    className="light-item-cover"
+                  />
+                  <p className="light-item-summary">{item.summary}</p>
+                  <div className="light-item-footer">
+                    <p className="light-item-time">
+                      {translateTime(item.created)}
+                    </p>
+                    <div className="light-item-icons">
+                      <Badge
+                        count={
+                          <p style={{ fontSize: 10 }}>
+                            {item.collection_number}
+                          </p>
+                        }
+                        offset={[0, 3]}
+                        showZero
+                      >
+                        <MyIcon
+                          type="collection"
+                          className="light-item-icons-icon"
+                          onClick={e => handleIcons(e, "collection")}
+                        />
+                      </Badge>
+                      <Badge
+                        count={
+                          <p style={{ fontSize: 10 }}>{item.star_number}</p>
+                        }
+                        offset={[0, 3]}
+                        showZero
+                      >
+                        <MyIcon
+                          type="heart"
+                          className="light-item-icons-icon"
+                          onClick={e => handleIcons(e, "star")}
+                        />
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </List.Item>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Loading />
         )}
-      />
-    </div>
+      </div>
+    </>
   );
 };
 

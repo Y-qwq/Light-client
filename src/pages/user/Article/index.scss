@@ -75,13 +75,14 @@
         &-comment {
             margin: 10px 3vw;
             margin-right: 0;
-            padding: 0 8px;
+            padding: 0 5px;
             border: 1px solid #ccc;
             outline: none;
             flex: 1;
         }
 
         &-submit {
+            user-select: none;
             background-color: transparent;
             border: 1px solid #ccc;
             outline: none;

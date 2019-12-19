@@ -159,4 +159,7 @@ export const changeArticleBanned = (_id: string, banned: number) =>
 export const changeArticlePass = (_id: string, pass: number) =>
   POST("/article/pass", { _id, pass });
 
+export const getArticleDetail = (_id: string) =>
+  GET("/article/detail", { _id });
+
 export default { GET, POST };

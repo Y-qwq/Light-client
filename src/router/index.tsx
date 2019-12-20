@@ -22,9 +22,19 @@ export const mobileRouterList = [
     component: Main,
     routes: [
       {
+        path: "/user/article",
+        component: Article
+      },
+      {
         path: "/user/all",
         auth: 1,
-        component: lazy(() => import("@/pages/user/All"))
+        component: lazy(() => import("@/pages/user/All")),
+        routes: [
+          {
+            path: "/user/all/article",
+            component: Article
+          }
+        ]
       },
       {
         path: "/user/light",

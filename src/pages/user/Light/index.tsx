@@ -9,7 +9,7 @@ import Loading from "@/commom/Loading";
 import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
-interface IListData {
+export interface IListData {
   _id: string;
   author: string;
   author_id: string;
@@ -19,6 +19,7 @@ interface IListData {
   summary: string;
   banned: number;
   pass: number;
+  recommend: number;
   collection_number: number;
   comment_number: number;
   reading_number: number;

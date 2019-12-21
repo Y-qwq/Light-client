@@ -1,8 +1,10 @@
 @import "@/assets/theme/_base.scss";
 
 .light {
+    position: absolute;
     width: 100vw;
     height: 100vh;
+
 
     &-header {
         width: 100vw;
@@ -35,6 +37,15 @@
         margin-top: 50px;
         margin-bottom: 55px;
     }
+
+    &-loading {
+        width: 100%;
+        max-height: 0;
+        position: absolute;
+        bottom: 85px;
+        left: 50%;
+        transform: translate(-50%);
+    }
 }
 
 .light-item {
@@ -42,7 +53,7 @@
 
     &-title {
         color: black;
-        font-size: 22px;
+        font-size: 20px;
         margin-bottom: 5px;
     }
 
@@ -76,10 +87,11 @@
         width: 15vw;
         display: flex;
         justify-content: space-between;
-        &-icon{
+
+        &-icon {
             padding: 5px 5px 0 5px;
         }
     }
 
-   
+
 }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
-import { message, Carousel, List, Badge } from "antd";
+import { useHistory, useLocation } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
+import InfiniteScroll from "react-infinite-scroller";
 import renderRoutes from "@/router/renderRoutes";
-import { useHistory } from "react-router";
+import HideOnScroll from "@/commom/HideOnScroll";
+import { message, Carousel, List } from "antd";
 import Loading from "@/commom/Loading";
-import MyIcon from "@/assets/MyIcon";
 import { IListData } from "../Light";
+import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
 const types = [
@@ -17,13 +19,7 @@ const types = [
   { name: "影视", type: "movie" }
 ];
 
-const typeMap = new Map([
-  ["read", "文"],
-  ["fm", "聼"],
-  ["movie", "影"],
-  ["music", "樂"],
-  ["image", "圖"]
-]);
+const FETCH_ARTICLE_COUNT = 5;
 
 const now = new Date().toLocaleDateString();
 const translateTime = (time: string) => {
@@ -33,8 +29,12 @@ const translateTime = (time: string) => {
 
 const All = ({ route }: RouteConfigComponentProps) => {
   const history = useHistory();
+  const location = useLocation();
+  const [stopScroll, setStopScroll] = useState(false);
   const [bannerData, setBannerData] = useState<IListData[]>();
-  const [data, setData] = useState<IListData[]>();
+  const [data, setData] = useState<IListData[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -45,15 +45,34 @@ const All = ({ route }: RouteConfigComponentProps) => {
         message.error("获取Banner数据失败!");
       }
     })();
-    (async () => {
-      const res = await getArticleList("all", 20);
-      if (res.data.type === "success") {
-        setData(res.data.list || []);
-      } else {
-        message.error("获取数据失败!");
-      }
-    })();
   }, []);
+
+  useEffect(() => {
+    if (/^\/user\/all\/article\/.*?$/.test(location.pathname)) {
+      setStopScroll(true);
+    } else {
+      setStopScroll(false);
+    }
+  }, [location]);
+
+  // 无限滚动获取数据 and 初始化获取数据
+  const handleFetchData = useCallback(async () => {
+    setLoadingMore(true);
+    const res = await getArticleList(
+      "all",
+      FETCH_ARTICLE_COUNT,
+      (data || []).length
+    );
+    if (res.data.type === "success") {
+      const resData = res.data.list || [];
+      setData(preData => [...preData, ...resData]);
+      if (resData.length === 0) {
+        message.warning("w(ﾟДﾟ)w 数据库已经被掏空啦~");
+        setHasMore(false);
+      }
+      setLoadingMore(false);
+    }
+  }, [data]);
 
   const readArticle = useCallback(
     (_id: string) => {
@@ -63,83 +82,88 @@ const All = ({ route }: RouteConfigComponentProps) => {
   );
 
   return (
-    <div className="all">
+    <>
       {route && renderRoutes(route.routes, route.authed)}
-      {bannerData && (
-        <Carousel autoplay>
-          {bannerData.map(banner => (
-            <div className="all-banner">
+      <div className="all" style={{ overflow: stopScroll ? "hidden" : "" }}>
+        <HideOnScroll>
+          <header className="all-header">
+            <p className="all-header-logo">Light</p>
+            <MyIcon type="zoom" className="all-header-search-icon" />
+          </header>
+        </HideOnScroll>
+        {bannerData && (
+          <Carousel autoplay>
+            {bannerData.map(banner => (
+              <div className="all-banner">
+                <img
+                  src={`${QINIU_CLIENT}/${banner.cover}`}
+                  onClick={() => readArticle(banner._id)}
+                  className="all-banner-img"
+                  alt="Banner"
+                />
+              </div>
+            ))}
+          </Carousel>
+        )}
+        <div className="all-type">
+          {types.map(({ type, name }) => (
+            <div className="all-type-box" key={type}>
               <img
-                src={`${QINIU_CLIENT}/${banner.cover}`}
-                onClick={() => readArticle(banner._id)}
-                className="all-banner-img"
-                alt="Banner"
+                src={`${QINIU_CLIENT}/light/all-${type}.jpg`}
+                className="all-type-img"
+                alt={name}
               />
+              <p className="all-type-name">{name}</p>
             </div>
           ))}
-        </Carousel>
-      )}
-      <div className="all-type">
-        {types.map(({ type, name }) => (
-          <div className="all-type-box" key={type}>
-            <img
-              src={`${QINIU_CLIENT}/light/all-${type}.jpg`}
-              className="all-type-img"
-              alt={name}
-            />
-            <p className="all-type-name">{name}</p>
-          </div>
-        ))}
-      </div>
-      {data ? (
-        <List
-          className="all-list"
-          dataSource={data}
-          renderItem={item => (
-            <List.Item key={item._id} onClick={() => readArticle(item._id)}>
-              <div className="all-item">
-                <p className="all-item-title">{item.title}</p>
-                <p className="all-item-type-author">{`${typeMap.get(
-                  item.type
-                )} ╱ ${item.author}`}</p>
-                <img
-                  src={`${QINIU_CLIENT}/${item.cover}`}
-                  alt="cover"
-                  className="all-item-cover"
-                />
-                <p className="all-item-summary">{item.summary}</p>
-                <div className="all-item-footer">
-                  <p className="all-item-time">{translateTime(item.created)}</p>
-                  <div className="all-item-icons">
-                    <Badge
-                      count={
-                        <p style={{ fontSize: 10 }}>{item.collection_number}</p>
-                      }
-                      offset={[0, 3]}
-                      showZero
-                    >
-                      <MyIcon
-                        type="collection"
-                        className="all-item-icons-icon"
-                      />
-                    </Badge>
-                    <Badge
-                      count={<p style={{ fontSize: 10 }}>{item.star_number}</p>}
-                      offset={[0, 3]}
-                      showZero
-                    >
-                      <MyIcon type="heart" className="all-item-icons-icon" />
-                    </Badge>
+        </div>
+        <InfiniteScroll
+          initialLoad={true}
+          loadMore={handleFetchData}
+          hasMore={!loadingMore && hasMore}
+          useWindow={true}
+        >
+          {data.length ? (
+            <List
+              className="all-list"
+              dataSource={data}
+              split={false}
+              renderItem={item => (
+                <List.Item key={item._id} onClick={() => readArticle(item._id)}>
+                  <div className="all-item">
+                    <p className="all-item-type">{`- ${
+                      types.filter(v => v.type === item.type)[0].name
+                    } -`}</p>
+                    <p className="all-item-title">{item.title}</p>
+                    <p className="all-item-type-author">{`${item.author}`}</p>
+                    <img
+                      src={`${QINIU_CLIENT}/${item.cover}`}
+                      alt="cover"
+                      className="all-item-cover"
+                    />
+                    <p className="all-item-summary">{item.summary}</p>
+                    <div className="all-item-footer">
+                      <p className="all-item-time">
+                        {translateTime(item.created)}
+                      </p>
+                      <div className="all-item-read_number">
+                        <MyIcon
+                          type="eye1"
+                          className="all-item-read_number-icon"
+                        />
+                        阅读量: {item.reading_number}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </List.Item>
+                </List.Item>
+              )}
+            />
+          ) : (
+            <Loading />
           )}
-        />
-      ) : (
-        <Loading />
-      )}
-    </div>
+        </InfiniteScroll>
+      </div>
+    </>
   );
 };
 

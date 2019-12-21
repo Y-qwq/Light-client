@@ -1,4 +1,6 @@
 import axios, { AxiosInstance } from "axios";
+import checkMobile from "@/util/checkMobile";
+import debounce from "lodash.debounce";
 import { message } from "antd";
 
 const HOST = "http://39.108.180.34";
@@ -9,11 +11,27 @@ export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上�
 
 export const QINIU_CLIENT = "http://q1f9rvxhs.bkt.clouddn.com"; // 图片根地址
 
+const gotoLogin = debounce(
+  () => {
+    message.error("未登录或登录凭证过期，请重新登录！");
+    window.location.href = checkMobile()
+      ? "/user/loginRegister/login"
+      : "/admin/login";
+  },
+  1000,
+  { leading: true, trailing: false }
+);
+
 axios.interceptors.response.use(
   response => response,
   error => {
     // 服务器主动返回的错误,则继续往下传递
     if (error.response && error.response.data && error.response.data.message) {
+      if (error.response.status === 401) {
+        gotoLogin();
+        Promise.reject(error);
+        return error.response;
+      }
       message.error(error.response.data.message, 0.8);
       return error.response;
     } else {

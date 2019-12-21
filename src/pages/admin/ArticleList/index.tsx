@@ -13,7 +13,6 @@ import {
   changeArticleRecommend
 } from "@/api";
 import "./index.scss";
-import { async } from "q";
 
 export interface IArticleListData {
   _id: string;

@@ -171,7 +171,9 @@ const Light = ({ route }: RouteConfigComponentProps) => {
             <Loading />
           )}
         </InfiniteScroll>
-        {loadingMore && hasMore && <Spin className="light-loading" />}
+        {data.length && loadingMore && hasMore && (
+          <Spin className="light-loading" />
+        )}
       </div>
     </>
   );

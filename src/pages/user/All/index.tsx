@@ -94,7 +94,7 @@ const All = ({ route }: RouteConfigComponentProps) => {
         {bannerData && (
           <Carousel autoplay>
             {bannerData.map(banner => (
-              <div className="all-banner">
+              <div className="all-banner" key={banner._id}>
                 <img
                   src={`${QINIU_CLIENT}/${banner.cover}`}
                   onClick={() => readArticle(banner._id)}

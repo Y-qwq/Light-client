@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
 import { RouteConfigComponentProps } from "react-router-config";
 import { useHistory, useLocation } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
@@ -54,6 +55,11 @@ const Light = ({ route }: RouteConfigComponentProps) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [stopScroll, setStopScroll] = useState(false);
 
+  const [stars, handleStarArticle] = useStarOrCollectArticle("star");
+  const [collections, handleCollectArticle] = useStarOrCollectArticle(
+    "collect"
+  );
+
   useEffect(() => {
     if (/^\/user\/light\/article\/.*?$/.test(location.pathname)) {
       setStopScroll(true);
@@ -89,11 +95,20 @@ const Light = ({ route }: RouteConfigComponentProps) => {
   }, [data]);
 
   const handleIcons = useCallback(
-    (e: React.MouseEvent<HTMLElement, MouseEvent>, type: string) => {
+    (
+      e: React.MouseEvent<HTMLElement, MouseEvent>,
+      type: string,
+      _id: string,
+      isAdd: boolean
+    ) => {
       e.stopPropagation();
-      console.log(type);
+      if (type === "star") {
+        handleStarArticle(_id, isAdd ? 1 : 0);
+      } else {
+        handleCollectArticle(_id, isAdd ? 1 : 0);
+      }
     },
-    []
+    [handleStarArticle, handleCollectArticle]
   );
 
   return (
@@ -111,7 +126,7 @@ const Light = ({ route }: RouteConfigComponentProps) => {
           hasMore={!loadingMore && hasMore}
           useWindow={true}
         >
-          {data.length ? (
+          {data.length || stopScroll ? (
             <List
               className="light-list"
               dataSource={data}
@@ -143,9 +158,18 @@ const Light = ({ route }: RouteConfigComponentProps) => {
                           showZero
                         >
                           <MyIcon
-                            type="collection"
+                            type={`collection${
+                              collections.has(item._id) ? "-active" : ""
+                            }`}
                             className="light-item-icons-icon"
-                            onClick={e => handleIcons(e, "collection")}
+                            onClick={e =>
+                              handleIcons(
+                                e,
+                                "collection",
+                                item._id,
+                                !stars.has(item._id)
+                              )
+                            }
                           />
                         </Badge>
                         <Badge
@@ -156,9 +180,18 @@ const Light = ({ route }: RouteConfigComponentProps) => {
                           showZero
                         >
                           <MyIcon
-                            type="heart"
+                            type={`heart${
+                              stars.has(item._id) ? "-active" : ""
+                            }`}
                             className="light-item-icons-icon"
-                            onClick={e => handleIcons(e, "star")}
+                            onClick={e =>
+                              handleIcons(
+                                e,
+                                "star",
+                                item._id,
+                                !stars.has(item._id)
+                              )
+                            }
                           />
                         </Badge>
                       </div>
@@ -166,7 +199,7 @@ const Light = ({ route }: RouteConfigComponentProps) => {
                   </div>
                 </List.Item>
               )}
-            ></List>
+            />
           ) : (
             <Loading />
           )}

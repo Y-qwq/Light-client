@@ -62,6 +62,11 @@
         margin-bottom: 15px;
     }
 
+    &-info {
+        display: flex;
+        justify-content: space-between;
+    }
+
     &-footer {
         width: 100vw;
         height: 50px;
@@ -88,7 +93,7 @@
             outline: none;
             margin: 10px 3vw;
 
-            &:active{
+            &:active {
                 background-color: #ccc;
             }
         }

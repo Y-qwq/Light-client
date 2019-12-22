@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
 import { useLocation, useHistory } from "react-router";
 import { getArticleDetail, QINIU_CLIENT } from "@/api";
 import HideOnScroll from "@/commom/HideOnScroll";
@@ -37,6 +38,10 @@ const typeMap = new Map([
 const Article = () => {
   const location = useLocation();
   const history = useHistory();
+  const [stars, handleStarArticle] = useStarOrCollectArticle("star");
+  const [collections, handleCollectArticle] = useStarOrCollectArticle(
+    "collect"
+  );
   const [article, setArticle] = useState<IArticleData>();
   const contentRef = useRef<any>();
 
@@ -47,6 +52,15 @@ const Article = () => {
       setArticle(res.data.article);
     })();
   }, [location]);
+
+  const handleStar = useCallback(() => {
+    article && handleStarArticle(article._id, stars.has(article._id) ? 0 : 1);
+  }, [article, handleStarArticle, stars]);
+
+  const handleCollect = useCallback(() => {
+    article &&
+      handleCollectArticle(article._id, collections.has(article._id) ? 0 : 1);
+  }, [article, handleCollectArticle, collections]);
 
   return (
     <div className="article" ref={contentRef}>
@@ -61,8 +75,22 @@ const Article = () => {
             {article && typeMap.get(article.type)}
           </p>
           <div className="article-header-icons">
-            <MyIcon type="collection" className="article-header-icons-icon" />
-            <MyIcon type="heart" className="article-header-icons-icon" />
+            <MyIcon
+              type={
+                article && collections.has(article._id)
+                  ? "collection-active"
+                  : "collection"
+              }
+              className="article-header-icons-icon"
+              onClick={handleCollect}
+            />
+            <MyIcon
+              type={
+                article && stars.has(article._id) ? "heart-active" : "heart"
+              }
+              className="article-header-icons-icon"
+              onClick={handleStar}
+            />
           </div>
         </header>
       </HideOnScroll>
@@ -76,6 +104,14 @@ const Article = () => {
             alt="cover"
           />
           <main dangerouslySetInnerHTML={{ __html: article.content }} />
+          <div className="article-info">
+            <p className="article-info-read">
+              {`阅读 ${article.reading_number}`}
+            </p>
+            <p className="article-info-updated">
+              {`更新于 ${new Date(article.updated).toLocaleDateString()}`}
+            </p>
+          </div>
         </article>
       ) : (
         <Loading />

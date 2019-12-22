@@ -180,6 +180,18 @@ export const changeArticlePass = (_id: string, pass: number) =>
 export const changeArticleRecommend = (_id: string, recommend: number) =>
   POST("/article/recommend", { _id, recommend });
 
+export const changeStarArticle = (
+  _id: string,
+  article_id: string,
+  isAdd: 0 | 1
+) => POST("/article/star", { _id, article_id, isAdd });
+
+export const changeCollectArticle = (
+  _id: string,
+  article_id: string,
+  isAdd: 0 | 1
+) => POST("/article/collect", { _id, article_id, isAdd });
+
 export const getArticleDetail = (_id: string) =>
   GET("/article/detail", { _id });
 

@@ -1,0 +1,41 @@
+.article-music-header {
+    width: 70%;
+    height: 50px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    position: relative;
+    display: flex;
+
+    .article-music-cover {
+        height: 100%;
+    }
+
+    .article-music-controller {
+        font-size: 24px;
+        position: absolute;
+        left: 25px;
+        top: 25px;
+        transform: translate(-50%, -50%);
+        padding: 8px;
+        background-color: rgba($color: #000, $alpha: 0.15);
+        border-radius: 50%;
+    }
+
+    .article-music-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .article-music-name {
+        color: black;
+        margin: 0;
+    }
+
+    .article-music-author {
+        font-size: 12px;
+        margin: 0;
+    }
+}

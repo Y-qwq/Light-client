@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
+import ArticleMusicHeader from "@/components/ArticleMusicHeader";
 import { useLocation, useHistory } from "react-router";
 import { getArticleDetail, QINIU_CLIENT } from "@/api";
 import HideOnScroll from "@/commom/HideOnScroll";
@@ -25,6 +26,17 @@ interface IArticleData {
   star_number: number;
   created: string;
   updated: string;
+  music?: {
+    count: number;
+    _id: string;
+    music_id: string;
+    album: string;
+    cover: string;
+    created: string;
+    name: string;
+    singers: string;
+    updated: string;
+  };
 }
 
 const typeMap = new Map([
@@ -94,10 +106,12 @@ const Article = () => {
           </div>
         </header>
       </HideOnScroll>
+      <div style={{ marginTop: 55 }} />
       {article ? (
         <article className="article-content">
           <h1 className="article-title">{article.title}</h1>
           <p className="article-author">{article.author}</p>
+          {article?.music && <ArticleMusicHeader {...article.music} />}
           <img
             className="article-cover"
             src={`${QINIU_CLIENT}/${article.cover}`}
@@ -124,6 +138,7 @@ const Article = () => {
         />
         <button className="article-footer-submit">发布</button>
       </footer>
+      <div style={{ marginBottom: 55 }} />
     </div>
   );
 };

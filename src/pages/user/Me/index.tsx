@@ -5,6 +5,7 @@ import renderRoutes from "@/router/renderRoutes";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { IState } from "@/redux/reducers";
+import { QINIU_CLIENT } from "@/api";
 import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
@@ -19,7 +20,12 @@ const Me = ({ route }: RouteConfigComponentProps) => {
   return (
     <div className="me">
       {route && renderRoutes(route.routes, route.authed)}
-      <div className="me-header">
+      <div
+        className="me-header"
+        style={{
+          backgroundImage: `url(${QINIU_CLIENT}/light/bg-user-info.jpg)`
+        }}
+      >
         <MyIcon type="setting" className="me-header-setting" />
         <UploadAvatar _id={user._id} hash={user.avatar} />
         <p className="me-header-name" onClick={handleGoChange}>

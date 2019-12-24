@@ -9,7 +9,7 @@ axios.defaults.baseURL = "http://127.0.0.1";
 
 export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
 
-export const QINIU_CLIENT = "http://q1f9rvxhs.bkt.clouddn.com"; // 图片根地址
+export const QINIU_CLIENT = "http://yzj.ningxiaojian.top"; // 图片根地址
 
 const gotoLogin = debounce(
   () => {

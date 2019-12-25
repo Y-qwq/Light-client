@@ -1,0 +1,21 @@
+.article-fm-header {
+    display: flex;
+    border: 1px solid #ccc;
+    box-shadow: .0 0 2px #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.article-fm {
+
+    &-volume {
+        font-size: 20px;
+    }
+
+    &-info {
+        white-space: pre-wrap;
+    }
+}

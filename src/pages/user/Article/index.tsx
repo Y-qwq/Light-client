@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
 import ArticleMusicHeader from "@/components/ArticleMusicHeader";
+import ArticleFmHeader from "@/components/ArticleFmHeader";
 import { useLocation, useHistory } from "react-router";
 import { getArticleDetail, QINIU_CLIENT } from "@/api";
 import HideOnScroll from "@/commom/HideOnScroll";
@@ -26,6 +27,7 @@ interface IArticleData {
   star_number: number;
   created: string;
   updated: string;
+  fmUrl?: string;
   music?: {
     count: number;
     _id: string;
@@ -112,6 +114,9 @@ const Article = () => {
           <h1 className="article-title">{article.title}</h1>
           <p className="article-author">{article.author}</p>
           {article?.music && <ArticleMusicHeader {...article.music} />}
+          {article.type === "fm" && article.fmUrl && (
+            <ArticleFmHeader fmUrl={article.fmUrl} author={article.author} />
+          )}
           <img
             className="article-cover"
             src={`${QINIU_CLIENT}/${article.cover}`}

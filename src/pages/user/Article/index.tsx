@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
 import ArticleMusicHeader from "@/components/ArticleMusicHeader";
+import ArticleAuthorBar from "@/components/ArticleAuthorBar";
 import ArticleFmHeader from "@/components/ArticleFmHeader";
-import { useLocation, useHistory } from "react-router";
 import { getArticleDetail, QINIU_CLIENT } from "@/api";
+import { useLocation, useHistory } from "react-router";
 import HideOnScroll from "@/commom/HideOnScroll";
 import Loading from "@/commom/Loading";
 import MyIcon from "@/assets/MyIcon";
@@ -12,7 +13,15 @@ import "./index.scss";
 
 interface IArticleData {
   _id: string;
-  author: string;
+  author: {
+    _id: string;
+    username: string;
+    email: string;
+    avatar?: string;
+    introduction?: string;
+    collecetions: [];
+    stars: [];
+  };
   author_id: string;
   type: string;
   title: string;
@@ -108,14 +117,16 @@ const Article = () => {
           </div>
         </header>
       </HideOnScroll>
-      <div style={{ marginTop: 55 }} />
       {article ? (
         <article className="article-content">
           <h1 className="article-title">{article.title}</h1>
-          <p className="article-author">{article.author}</p>
+          <p className="article-author">{article.author.username}</p>
           {article?.music && <ArticleMusicHeader {...article.music} />}
           {article.type === "fm" && article.fmUrl && (
-            <ArticleFmHeader fmUrl={article.fmUrl} author={article.author} />
+            <ArticleFmHeader
+              fmUrl={article.fmUrl}
+              author={article.author.username}
+            />
           )}
           <img
             className="article-cover"
@@ -131,19 +142,28 @@ const Article = () => {
               {`更新于 ${new Date(article.updated).toLocaleDateString()}`}
             </p>
           </div>
+
+          <div className="article-author-info">
+            <p className="article-author-info-title">作者</p>
+            <ArticleAuthorBar
+              _id={article.author_id}
+              avatar={article.author.avatar}
+              username={article.author.username}
+              introduction={article.author.introduction}
+            />
+          </div>
         </article>
       ) : (
         <Loading />
       )}
-      <footer className="article-footer">
+      <div className="article-footer">
         <input
           type="text"
           className="article-footer-comment"
           placeholder="评论一下..."
         />
         <button className="article-footer-submit">发布</button>
-      </footer>
-      <div style={{ marginBottom: 55 }} />
+      </div>
     </div>
   );
 };

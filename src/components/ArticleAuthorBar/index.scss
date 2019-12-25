@@ -1,0 +1,44 @@
+.article-author {
+    &-avatar {
+        color: #f56a00;
+        background-color: #fde3cf;
+    }
+
+    &-bar {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    &-content {
+        margin-left: 10px;
+    }
+
+    &-name {
+        color: black;
+    }
+
+    &-introduction {
+        font-size: 13px;
+        max-width: 55vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &-follow {
+        user-select: none;
+        padding: 1px 8px;
+        border-radius: 2px;
+        background: transparent;
+        border: 1px solid #333;
+        position: absolute;
+        right: 0;
+        outline: none;
+
+        &:active {
+            background-color: #ccc;
+        }
+    }
+}

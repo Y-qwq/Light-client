@@ -13,6 +13,8 @@ interface IAction {
 export interface IUserInfo {
   _id: string;
   auth: number;
+  follows: string[];
+  followeds: string[];
   collections: string[];
   stars: string[];
   email: string;
@@ -39,6 +41,8 @@ const userInitialState: IUser = {
     email: "",
     username: "",
     auth: 0,
+    follows: [],
+    followeds: [],
     collections: [],
     stars: [],
     lastLoginIp: "",
@@ -71,6 +75,15 @@ export function user(state: IUser = userInitialState, action: IAction) {
         info: {
           ...state.info,
           avatar: action.payload
+        }
+      };
+
+    case types.UPDATE_USER_FOLLOWS:
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          follows: action.payload
         }
       };
 

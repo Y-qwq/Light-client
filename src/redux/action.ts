@@ -19,6 +19,12 @@ export class loginAction {
       payload
     };
   };
+  public static updateUserFollows = (payload: string[]) => {
+    return {
+      type: types.UPDATE_USER_FOLLOWS,
+      payload
+    };
+  };
 }
 
 export class adminAction {

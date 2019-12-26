@@ -195,4 +195,7 @@ export const changeCollectArticle = (
 export const getArticleDetail = (_id: string) =>
   GET("/article/detail", { _id });
 
+export const followUser = (my_id: string, user_id: string, isFollow: 0 | 1) =>
+  POST("/user/follow", { my_id, user_id, isFollow });
+
 export default { GET, POST };

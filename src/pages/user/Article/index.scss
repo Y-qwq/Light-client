@@ -69,19 +69,20 @@
         justify-content: space-between;
     }
 
-    &-author-info {
-        margin-top: 30px;
+    &-footer-box {
+        margin: 30px 0;
 
-        &-title {
+        &-name {
             border-left: 5px solid black;
             padding-left: 5px;
             color: black;
-            font-size: 20px;
-            line-height: 20px;
+            font-size: 18px;
+            line-height: 18px;
+            margin-bottom: 20px;
         }
     }
 
-    &-footer {
+    &-comment {
         width: 100vw;
         height: 50px;
         background-color: #fff;
@@ -91,7 +92,7 @@
         display: flex;
         justify-content: space-between;
 
-        &-comment {
+        &-text {
             margin: 10px 3vw;
             margin-right: 0;
             padding: 0 5px;

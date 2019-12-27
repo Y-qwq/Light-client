@@ -40,13 +40,19 @@ const ArticleAuthorBar = ({
 
   return (
     <div className="article-author-bar">
-      <Avatar
-        src={`${QINIU_CLIENT}/avatar/${_id}?h=${avatar}`}
-        className="article-author-avatar"
-        size={44}
-      >
-        A
-      </Avatar>
+      {avatar ? (
+        <Avatar
+          src={`${QINIU_CLIENT}/avatar/${_id}?h=${avatar}`}
+          className="article-author-avatar"
+          size={44}
+        >
+          A
+        </Avatar>
+      ) : (
+        <Avatar className="article-author-avatar" size={44}>
+          A
+        </Avatar>
+      )}
       <div className="article-author-content">
         <p className="article-author-name">{username}</p>
         <p className="article-author-introduction">

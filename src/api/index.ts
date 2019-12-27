@@ -198,4 +198,12 @@ export const getArticleDetail = (_id: string) =>
 export const followUser = (my_id: string, user_id: string, isFollow: 0 | 1) =>
   POST("/user/follow", { my_id, user_id, isFollow });
 
+export const commentArticle = (
+  article_id: string,
+  commentator_id: string,
+  content: string,
+  reply_id?: string
+) =>
+  POST("/article/comment", { article_id, commentator_id, content, reply_id });
+
 export default { GET, POST };

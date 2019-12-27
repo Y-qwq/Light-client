@@ -1,15 +1,31 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { getArticleDetail, QINIU_CLIENT, commentArticle } from "@/api";
 import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
 import ArticleMusicHeader from "@/components/ArticleMusicHeader";
 import ArticleAuthorBar from "@/components/ArticleAuthorBar";
+import ArticleCommentBar from "@/components/ArticleComment";
 import ArticleFmHeader from "@/components/ArticleFmHeader";
-import { getArticleDetail, QINIU_CLIENT } from "@/api";
 import { useLocation, useHistory } from "react-router";
 import HideOnScroll from "@/commom/HideOnScroll";
+import { useSelector } from "react-redux";
+import { IState } from "@/redux/reducers";
 import Loading from "@/commom/Loading";
 import MyIcon from "@/assets/MyIcon";
-import { Icon } from "antd";
+import { Icon, Empty, message } from "antd";
 import "./index.scss";
+
+export interface IComments
+  extends Array<{
+    _id: string;
+    star_number: string;
+    commentator_id: string;
+    content: string;
+    created: string;
+    updated: string;
+  }> {}
+
+export interface ICommentators
+  extends Array<{ avatar: string; _id: string; username: string }> {}
 
 interface IArticleData {
   _id: string;
@@ -30,6 +46,8 @@ interface IArticleData {
   content: string;
   banned: number;
   pass: number;
+  comments: IComments;
+  commentators: ICommentators;
   collection_number: number;
   comment_number: number;
   reading_number: number;
@@ -61,11 +79,13 @@ const typeMap = new Map([
 const Article = () => {
   const location = useLocation();
   const history = useHistory();
+  const user = useSelector((state: IState) => state.user.info);
   const [stars, handleStarArticle] = useStarOrCollectArticle("star");
   const [collections, handleCollectArticle] = useStarOrCollectArticle(
     "collect"
   );
   const [article, setArticle] = useState<IArticleData>();
+  const [comment, setComment] = useState("");
   const contentRef = useRef<any>();
 
   useEffect(() => {
@@ -84,6 +104,17 @@ const Article = () => {
     article &&
       handleCollectArticle(article._id, collections.has(article._id) ? 0 : 1);
   }, [article, handleCollectArticle, collections]);
+
+  const handleComment = useCallback(async () => {
+    if (article && comment.trim()) {
+      const res = await commentArticle(article._id, user._id, comment);
+      if (res.data.type === "success") {
+        setArticle(pre => pre && { ...pre, comments: res.data.comments });
+        message.success("评论成功！");
+        setComment("");
+      }
+    }
+  }, [article, user._id, comment]);
 
   return (
     <div className="article" ref={contentRef}>
@@ -143,8 +174,8 @@ const Article = () => {
             </p>
           </div>
 
-          <div className="article-author-info">
-            <p className="article-author-info-title">作者</p>
+          <div className="article-footer-box">
+            <p className="article-footer-box-name">作者</p>
             <ArticleAuthorBar
               _id={article.author_id}
               avatar={article.author.avatar}
@@ -152,17 +183,34 @@ const Article = () => {
               introduction={article.author.introduction}
             />
           </div>
+
+          <div className="article-footer-box">
+            <p className="article-footer-box-name">评论</p>
+            {article.comments.length ? (
+              <ArticleCommentBar
+                comments={article.comments}
+                commentators={article.commentators}
+              />
+            ) : (
+              <Empty description="暂无评论" />
+            )}
+          </div>
         </article>
       ) : (
         <Loading />
       )}
-      <div className="article-footer">
+
+      <div className="article-comment">
         <input
           type="text"
-          className="article-footer-comment"
+          className="article-comment-text"
           placeholder="评论一下..."
+          value={comment}
+          onChange={e => setComment(e.target.value)}
         />
-        <button className="article-footer-submit">发布</button>
+        <button className="article-comment-submit" onClick={handleComment}>
+          发布
+        </button>
       </div>
     </div>
   );

@@ -1,0 +1,48 @@
+.article-comments {
+    width: 100%;
+}
+
+.comment-bar {
+    margin-top: 15px;
+    width: 100%;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+
+    &-header {
+        display: flex;
+        align-items: center;
+
+        &-avatar {
+            color: #f56a00;
+            background-color: #fde3cf;
+        }
+
+        &-username {
+            margin-left: 10px;
+        }
+
+        &-created {
+            position: absolute;
+            right: 0;
+        }
+    }
+
+    &-content {
+        color: black;
+        margin: 20px 15px;
+    }
+
+    &-footer {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        &-icons {
+            font-size: 16px;
+            padding: 0 5px;
+            margin: 0 8px;
+        }
+    }
+
+}

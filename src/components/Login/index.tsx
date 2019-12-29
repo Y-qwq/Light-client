@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
-import LongButton from "@/commom/LongButton";
+import LongButton from "@/common/LongButton";
 import { useHistory } from "react-router";
 import useLogin from "@/hooks/useLogin";
-import MyInput from "@/commom/MyInput";
+import MyInput from "@/common/MyInput";
 import "./index.scss";
 import { useDispatch } from "react-redux";
 import { loginAction } from "@/redux/action";

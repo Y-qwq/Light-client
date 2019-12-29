@@ -4,10 +4,10 @@ import { RouteConfigComponentProps } from "react-router-config";
 import { useHistory, useLocation } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
 import InfiniteScroll from "react-infinite-scroller";
-import HideOnScroll from "@/commom/HideOnScroll";
+import HideOnScroll from "@/common/HideOnScroll";
 import renderRoutes from "@/router/renderRoutes";
 import { List, Badge, message, Spin } from "antd";
-import Loading from "@/commom/Loading";
+import Loading from "@/common/Loading";
 import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
@@ -167,7 +167,7 @@ const Light = ({ route }: RouteConfigComponentProps) => {
                                 e,
                                 "collection",
                                 item._id,
-                                !stars.has(item._id)
+                                !collections.has(item._id)
                               )
                             }
                           />

@@ -5,7 +5,7 @@ import { message } from "antd";
 
 const HOST = "http://39.108.180.34";
 
-axios.defaults.baseURL = "http://127.0.0.1";
+axios.defaults.baseURL = `${HOST}:5000`;
 
 export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
 

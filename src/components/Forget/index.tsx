@@ -3,8 +3,8 @@ import { RouteConfigComponentProps } from "react-router-config";
 import { message } from "antd";
 import { forgetPassword, resetPassword } from "@/api";
 import useCheckEmail from "@/hooks/useCheckEmail";
-import LongButton from "@/commom/LongButton";
-import MyInput from "@/commom/MyInput";
+import LongButton from "@/common/LongButton";
+import MyInput from "@/common/MyInput";
 import "./index.scss";
 
 const Forget = ({ history, location }: RouteConfigComponentProps) => {

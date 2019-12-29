@@ -11,7 +11,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import renderRoutes from "@/router/renderRoutes";
 import { useSelector } from "react-redux";
 import { IState } from "@/redux/reducers";
-import Loading from "@/commom/Loading";
+import Loading from "@/common/Loading";
 import { QINIU_CLIENT } from "@/api";
 import axios from "axios";
 import "./index.scss";
@@ -128,16 +128,16 @@ const menuList: IMenuList = [
 const routeMap = new Map([
   ["1", "/admin/consolePanel"],
   ["2", "/admin/consolePanel/userManage"],
-  ["3-1-1", "/admin/consolePanel/release/readArticle"],
-  ["3-1-2", "/admin/consolePanel/list/read"],
-  ["3-2-1", "/admin/consolePanel/release/imageArticle"],
-  ["3-2-2", "/admin/consolePanel/list/image"],
-  ["3-3-1", "/admin/consolePanel/release/musicArticle"],
-  ["3-3-2", "/admin/consolePanel/list/music"],
-  ["3-4-1", "/admin/consolePanel/release/movieArticle"],
-  ["3-4-2", "/admin/consolePanel/list/movie"],
-  ["3-5-1", "/admin/consolePanel/release/fmArticle"],
-  ["3-5-2", "/admin/consolePanel/list/fm"],
+  ["3-1-1", "/admin/consolePanel/article/release/read"],
+  ["3-1-2", "/admin/consolePanel/article/list/read"],
+  ["3-2-1", "/admin/consolePanel/article/release/image"],
+  ["3-2-2", "/admin/consolePanel/article/list/image"],
+  ["3-3-1", "/admin/consolePanel/article/release/music"],
+  ["3-3-2", "/admin/consolePanel/article/list/music"],
+  ["3-4-1", "/admin/consolePanel/article/release/movie"],
+  ["3-4-2", "/admin/consolePanel/article/list/movie"],
+  ["3-5-1", "/admin/consolePanel/article/release/fm"],
+  ["3-5-2", "/admin/consolePanel/article/list/fm"],
   ["4", "/admin/consolePanel/SystemManage"]
 ]);
 
@@ -157,11 +157,11 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         setCurMenuKey(key);
       }
     });
-    // 根据url /list/xxx或者/releaseXxxxArticle 的内容设置不同类型的文章
-    let type: any = location.pathname.match(/(?<=\/list\/)(?:.+?)(?=(\/|$))/);
-    if (!type)
-      type = location.pathname.match(/(?<=\/release\/)(?:.+?)(?=Article)/);
-    type = type ? type[0].toLowerCase() : undefined;
+    // 根据url的内容设置不同类型的文章
+    let type: any = location.pathname.match(
+      /\/admin\/consolePanel\/article\/.*?\/(.*?)\/?$/
+    );
+    type = type && type[1] ? type[1].toLowerCase() : undefined;
     setRouteProps({ type });
   }, [location.pathname]);
 

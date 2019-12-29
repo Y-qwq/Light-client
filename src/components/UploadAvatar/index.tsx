@@ -8,7 +8,7 @@ import React, {
 import { QINIU_CLIENT, updateUserAvatar } from "@/api";
 import { UploadFile } from "antd/lib/upload/interface";
 import { UploadChangeParam } from "antd/lib/upload";
-import QiniuUpload from "@/commom/QiniuUpload";
+import QiniuUpload from "@/common/QiniuUpload";
 import { loginAction } from "@/redux/action";
 import { useDispatch } from "react-redux";
 import { Avatar, Icon } from "antd";

@@ -8,7 +8,7 @@ import React, {
 import { FormComponentProps } from "antd/lib/form";
 import { Form, Input, Icon, Button, message, Select } from "antd";
 import { RouteConfigComponentProps } from "react-router-config";
-import QiniuUpload from "@/commom/QiniuUpload";
+import QiniuUpload from "@/common/QiniuUpload";
 import { ContentUtils } from "braft-utils";
 import BraftEditor from "braft-editor";
 import { LabeledValue } from "antd/lib/select";
@@ -157,7 +157,6 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
           music: undefined,
           content: BraftEditor.createEditorState(null)
         });
-        cover && qiniuDelete(cover);
         setCover(undefined);
         setMusicId(undefined);
         setAudioUrl("");
@@ -169,7 +168,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
         message.error("删除草稿箱失败！");
         return false;
       }
-    }, [cover, setFieldsValue, articleId]);
+    }, [setFieldsValue, articleId]);
 
     // 发布文章
     const handleRelease = useCallback(async () => {
@@ -213,10 +212,11 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
     // 手动执行清理
     const handleClear = useCallback(async () => {
       setFocus(true);
+      cover && qiniuDelete(cover);
       if (await clear()) {
         message.success("清理草稿箱成功！");
       }
-    }, [clear]);
+    }, [clear, cover]);
 
     // 文件上传前获取文件信息，拼接路径并暂存
     const handleBeforeUpload = useCallback(

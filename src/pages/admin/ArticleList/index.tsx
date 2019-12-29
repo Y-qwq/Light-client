@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
-import SelectTap, { ISelectTagData } from "@/commom/SelectTap";
+import SelectTap, { ISelectTagData } from "@/common/SelectTap";
 import { SorterResult } from "antd/lib/table/interface";
-import BannedSwitch from "@/commom/BannedSwitch";
+import BannedSwitch from "@/common/BannedSwitch";
 import { ColumnProps } from "antd/es/table";
 import { Table } from "antd";
 import {

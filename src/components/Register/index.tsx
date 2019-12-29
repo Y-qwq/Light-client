@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { useHistory } from "react-router";
 import { message } from "antd";
-import LongButton from "@/commom/LongButton";
-import MyInput from "@/commom/MyInput";
+import LongButton from "@/common/LongButton";
+import MyInput from "@/common/MyInput";
 import { userRegister } from "@/api";
 import "./index.scss";
 

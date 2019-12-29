@@ -9,6 +9,7 @@
     .my-input {
         &-name {
             padding: 0 10px;
+            white-space: nowrap;
         }
 
         &-text {

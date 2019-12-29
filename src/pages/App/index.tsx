@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useCallback } from "react";
-import Loading from "@/commom/Loading";
+import Loading from "@/common/Loading";
 import { mobileRouterList, pcRouterList } from "@/router";
 import { useDispatch, useSelector } from "react-redux";
 import { checkToken, checkAdminToken, musicLogin } from "@/api";

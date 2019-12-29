@@ -4,12 +4,14 @@ import { useCallback, useMemo } from "react";
 import { changeStarArticle, changeCollectArticle } from "@/api";
 import { loginAction } from "@/redux/action";
 
-const useStarOrCollectArticle: (
-  type: "collect" | "star"
-) => [
-  Set<string>,
-  (article_id: string, isAdd: 0 | 1) => Promise<boolean>
-] = type => {
+interface IUseStarOrCollectArticle {
+  (type: "collect" | "star"): [
+    Set<string>,
+    (article_id: string, isAdd: 0 | 1) => Promise<boolean>
+  ];
+}
+
+const useStarOrCollectArticle: IUseStarOrCollectArticle = type => {
   const dispatch = useDispatch();
   const { _id, stars, collections } = useSelector(
     (state: IState) => state.user.info

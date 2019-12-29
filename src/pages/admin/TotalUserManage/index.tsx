@@ -3,14 +3,14 @@ import { QINIU_CLIENT, changeUserAuth, changeUserBanned } from "@/api";
 import { Table, Avatar, Tag, Input, Button, Icon } from "antd";
 import useFetchUserList from "@/hooks/useFetchUserList";
 import AddAccountModal from "@/components/AddAccountModal";
-import BannedSwitch from "@/commom/BannedSwitch";
+import BannedSwitch from "@/common/BannedSwitch";
 import Highlighter from "react-highlight-words";
 import { IDataUser } from "@/redux/reducers";
 import { ColumnProps } from "antd/es/table";
 import SelectTap, {
   ISelectTagData,
   ISelectTagOnSelect
-} from "@/commom/SelectTap";
+} from "@/common/SelectTap";
 
 const authTapData: ISelectTagData = [
   { name: "用户", color: "blue", key: 1 },

@@ -11,7 +11,7 @@ import { IListData } from "../Light";
 import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
-const types = [
+export const types = [
   { name: "阅读", type: "read" },
   { name: "图文", type: "image" },
   { name: "音乐", type: "music" },
@@ -74,9 +74,16 @@ const All = ({ route }: RouteConfigComponentProps) => {
     }
   }, [data]);
 
-  const readArticle = useCallback(
+  const handleClickArticle = useCallback(
     (_id: string) => {
       history.push(`/user/all/article/${_id}`);
+    },
+    [history]
+  );
+
+  const handleClickType = useCallback(
+    (type: string) => {
+      history.push("/user/category/" + type);
     },
     [history]
   );
@@ -97,7 +104,7 @@ const All = ({ route }: RouteConfigComponentProps) => {
               <div className="all-banner" key={banner._id}>
                 <img
                   src={`${QINIU_CLIENT}/${banner.cover}`}
-                  onClick={() => readArticle(banner._id)}
+                  onClick={() => handleClickArticle(banner._id)}
                   className="all-banner-img"
                   alt="Banner"
                 />
@@ -107,7 +114,11 @@ const All = ({ route }: RouteConfigComponentProps) => {
         )}
         <div className="all-type">
           {types.map(({ type, name }) => (
-            <div className="all-type-box" key={type}>
+            <div
+              className="all-type-box"
+              key={type}
+              onClick={() => handleClickType(type)}
+            >
               <img
                 src={`${QINIU_CLIENT}/light/all-${type}.jpg`}
                 className="all-type-img"
@@ -129,7 +140,10 @@ const All = ({ route }: RouteConfigComponentProps) => {
               dataSource={data}
               split={false}
               renderItem={item => (
-                <List.Item key={item._id} onClick={() => readArticle(item._id)}>
+                <List.Item
+                  key={item._id}
+                  onClick={() => handleClickArticle(item._id)}
+                >
                   <div className="all-item">
                     <p className="all-item-type">{`- ${
                       types.filter(v => v.type === item.type)[0].name

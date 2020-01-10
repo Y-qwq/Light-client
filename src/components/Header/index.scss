@@ -1,0 +1,23 @@
+.article-list-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    height: 50px;
+
+    color: #000;
+    font-size: 16px;
+
+    &-back {
+        color: #666;
+        padding: 10px;
+    }
+
+    &-title-center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}

@@ -1574,7 +1574,7 @@
     "@types/react" "*"
     "@types/react-router" "*"
 
-"@types/react-router@*", "@types/react-router@^5.1.3":
+"@types/react-router@*":
   version "5.1.3"
   resolved "https://registry.npm.taobao.org/@types/react-router/download/@types/react-router-5.1.3.tgz#7c7ca717399af64d8733d8cb338dd43641b96f2d"
   integrity sha1-fHynFzma9k2HM9jLM43UNkG5by0=

@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { RouteConfigComponentProps } from "react-router-config";
 import SelectTap, { ISelectTagData } from "@/common/SelectTap";
 import { SorterResult } from "antd/lib/table/interface";
 import AsyncSwitch from "@/common/AsyncSwitch";
+import { useParams } from "react-router-dom";
 import { ColumnProps } from "antd/es/table";
 import { Table } from "antd";
 import {
@@ -39,11 +39,8 @@ const passTapData: ISelectTagData = [
   { name: "未过", color: "red", key: 0 }
 ];
 
-interface IArticleList extends RouteConfigComponentProps {
-  type?: "read" | "fm" | "music" | "movie" | "image";
-}
-
-const ArticleList = ({ type = "read" }: IArticleList) => {
+const ArticleList = () => {
+  const { type } = useParams<{ type: string }>();
   const [articleList, setArticleList] = useState([]);
 
   const [sorterKey, setSorterKey] = useState("");

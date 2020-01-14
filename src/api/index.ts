@@ -176,7 +176,15 @@ export const qiniuFetch = (url: string, key: string) =>
   POST("/qiniu/fetch", { url, key });
 
 export const getArticleList = (
-  type: "read" | "fm" | "music" | "movie" | "image" | "all" | "recommend",
+  type:
+    | "read"
+    | "fm"
+    | "music"
+    | "movie"
+    | "image"
+    | "all"
+    | "recommend"
+    | string,
   count: number,
   skip: number = 0,
   isUser?: boolean,

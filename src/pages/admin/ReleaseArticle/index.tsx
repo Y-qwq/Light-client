@@ -8,12 +8,13 @@ import React, {
 import { FormComponentProps } from "antd/lib/form";
 import { Form, Input, Icon, Button, message, Select } from "antd";
 import { RouteConfigComponentProps } from "react-router-config";
+import { LabeledValue } from "antd/lib/select";
 import QiniuUpload from "@/common/QiniuUpload";
+import { useParams } from "react-router-dom";
 import { ContentUtils } from "braft-utils";
 import BraftEditor from "braft-editor";
-import { LabeledValue } from "antd/lib/select";
-import { debounce } from "lodash";
 import ObjectId from "bson-objectid";
+import { debounce } from "lodash";
 import {
   QINIU_CLIENT,
   saveAraft,
@@ -35,17 +36,15 @@ import "./index.scss";
 
 interface IReleaseArticleProps
   extends FormComponentProps,
-    RouteConfigComponentProps {
-  type?: "read" | "music" | "movie" | "fm" | "image";
-}
+    RouteConfigComponentProps {}
 
 let timer: any = null;
 
 const ReleaseArticle = Form.create<IReleaseArticleProps>()(
   ({
-    form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue },
-    type = "read"
+    form: { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue }
   }: IReleaseArticleProps) => {
+    const { type } = useParams<{ type: string }>();
     const [articleId, setArticleId] = useState(ObjectId().toString());
     const [cover, setCover] = useState<string | undefined>();
     // 上传的文件名（路径），beforeUpload获取。
@@ -67,8 +66,26 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
     const [audioUrl, setAudioUrl] = useState("");
     const editorRef = useRef();
 
-    // init
+    // 初始化本地编辑区数据
+    const clearLocalData = useCallback(() => {
+      setFocus(true);
+      setFieldsValue({
+        title: undefined,
+        summary: undefined,
+        music: undefined,
+        content: BraftEditor.createEditorState(null)
+      });
+      setCover(undefined);
+      setMusicId(undefined);
+      setAudioUrl("");
+      setSongs([]);
+      setSelectPlaceholder("搜索音乐！");
+      setArticleId(ObjectId().toString());
+    }, [setFieldsValue]);
+
+    // 初始化
     useEffect(() => {
+      clearLocalData();
       (async () => {
         const res = await getAraft(type);
         if (res.data.type === "success") {
@@ -92,7 +109,7 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
         }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [type]);
 
     // 拼接数据
     const handleGetDate = useCallback(() => {
@@ -146,29 +163,17 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       setFocus(false);
     }, []);
 
-    // 清空编辑区
-    const clear = useCallback(async () => {
+    // 删除草稿箱
+    const deleteAraft = useCallback(async () => {
       const res = await clearAraft(articleId);
       if (res.data.type === "success") {
-        setFocus(true);
-        setFieldsValue({
-          title: undefined,
-          summary: undefined,
-          music: undefined,
-          content: BraftEditor.createEditorState(null)
-        });
-        setCover(undefined);
-        setMusicId(undefined);
-        setAudioUrl("");
-        setSongs([]);
-        setSelectPlaceholder("搜索音乐！");
-        setArticleId(ObjectId().toString());
+        clearLocalData();
         return true;
       } else {
         message.error("删除草稿箱失败！");
         return false;
       }
-    }, [setFieldsValue, articleId]);
+    }, [articleId, clearLocalData]);
 
     // 发布文章
     const handleRelease = useCallback(async () => {
@@ -203,20 +208,20 @@ const ReleaseArticle = Form.create<IReleaseArticleProps>()(
       // 发布
       const res = await writeArticle(articleData as any);
       if (res.data.type === "success") {
-        clear();
+        deleteAraft();
         message.success("发布成功!");
       }
       setReleaseLoading(false);
-    }, [handleGetDate, clear]);
+    }, [handleGetDate, deleteAraft]);
 
     // 手动执行清理
     const handleClear = useCallback(async () => {
       setFocus(true);
       cover && qiniuDelete(cover);
-      if (await clear()) {
+      if (await deleteAraft()) {
         message.success("清理草稿箱成功！");
       }
-    }, [clear, cover]);
+    }, [deleteAraft, cover]);
 
     // 文件上传前获取文件信息，拼接路径并暂存
     const handleBeforeUpload = useCallback(

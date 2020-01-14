@@ -146,9 +146,6 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
   const location = useLocation();
   const [curMenuKey, setCurMenuKey] = useState("");
   const user = useSelector((state: IState) => state.user.info);
-  const [routeProps, setRouteProps] = useState<{ type?: string }>({
-    type: "read"
-  });
 
   useEffect(() => {
     // 设置菜单当前激活项
@@ -157,12 +154,6 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         setCurMenuKey(key);
       }
     });
-    // 根据url的内容设置不同类型的文章
-    let type: any = location.pathname.match(
-      /\/admin\/consolePanel\/article\/.*?\/(.*?)\/?$/
-    );
-    type = type && type[1] ? type[1].toLowerCase() : undefined;
-    setRouteProps({ type });
   }, [location.pathname]);
 
   const handleLoginOut = useCallback(() => {
@@ -249,8 +240,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         <Content className="console-panel-content-box">
           <div className="console-panel-content">
             <Suspense fallback={<Loading />}>
-              {route &&
-                renderRoutes(route.routes, route.authed, undefined, routeProps)}
+              {route && renderRoutes(route.routes, route.authed)}
             </Suspense>
           </div>
         </Content>

@@ -104,11 +104,11 @@ export const pcRouterList = [
         component: lazy(() => import("@/pages/admin/TotalUserManage"))
       },
       {
-        path: "/admin/consolePanel/article/list/",
+        path: "/admin/consolePanel/article/list/:type",
         component: lazy(() => import("@/pages/admin/ArticleList"))
       },
       {
-        path: "/admin/consolePanel/article/release/",
+        path: "/admin/consolePanel/article/release/:type",
         component: lazy(() => import("@/pages/admin/ReleaseArticle"))
       },
       {

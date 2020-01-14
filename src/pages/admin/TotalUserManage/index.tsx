@@ -3,7 +3,7 @@ import { QINIU_CLIENT, changeUserAuth, changeUserBanned } from "@/api";
 import { Table, Avatar, Tag, Input, Button, Icon } from "antd";
 import useFetchUserList from "@/hooks/useFetchUserList";
 import AddAccountModal from "@/components/AddAccountModal";
-import BannedSwitch from "@/common/BannedSwitch";
+import AsyncSwitch from "@/common/AsyncSwitch";
 import Highlighter from "react-highlight-words";
 import { IDataUser } from "@/redux/reducers";
 import { ColumnProps } from "antd/es/table";
@@ -233,7 +233,7 @@ const TotalUserManage: React.SFC = () => {
       onFilter: (value: string, data: IDataUser) => data.banned === +value,
       filterMultiple: false,
       render: (banned: number, { _id }: IDataUser) => (
-        <BannedSwitch
+        <AsyncSwitch
           checked={!banned}
           onClick={() => handleBannedClick(_id, banned)}
         />

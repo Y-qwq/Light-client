@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
 import SelectTap, { ISelectTagData } from "@/common/SelectTap";
 import { SorterResult } from "antd/lib/table/interface";
-import BannedSwitch from "@/common/BannedSwitch";
+import AsyncSwitch from "@/common/AsyncSwitch";
 import { ColumnProps } from "antd/es/table";
 import { Table } from "antd";
 import {
@@ -220,8 +220,8 @@ const ArticleList = ({ type = "read" }: IArticleList) => {
       width: "7%",
       sorter: true,
       render: (recommend, { _id }) => (
-        <BannedSwitch
-          checked={recommend}
+        <AsyncSwitch
+          checked={Boolean(recommend)}
           onClick={async () => await changeRecommend(_id, recommend ? 0 : 1)}
         />
       )
@@ -232,7 +232,7 @@ const ArticleList = ({ type = "read" }: IArticleList) => {
       width: "7%",
       sorter: true,
       render: (banned, { _id }) => (
-        <BannedSwitch
+        <AsyncSwitch
           checked={!banned}
           onClick={async () => await changeBanned(_id, banned ? 0 : 1)}
         />

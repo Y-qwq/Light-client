@@ -2,12 +2,12 @@ import React, { useState, useCallback } from "react";
 import { Switch } from "antd";
 import { SwitchChangeEventHandler } from "antd/lib/switch";
 
-interface IBannedSwitch {
+interface IAsyncSwitch {
   checked: boolean;
   onClick: SwitchChangeEventHandler | undefined;
 }
 
-const BannedSwitch = ({ checked, onClick }: IBannedSwitch) => {
+const AsyncSwitch = ({ checked, onClick }: IAsyncSwitch) => {
   const [loading, setLoading] = useState(false);
 
   const handleSwitchBanned = useCallback(
@@ -26,4 +26,4 @@ const BannedSwitch = ({ checked, onClick }: IBannedSwitch) => {
   );
 };
 
-export default BannedSwitch;
+export default AsyncSwitch;

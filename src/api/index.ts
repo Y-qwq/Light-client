@@ -2,10 +2,14 @@ import axios, { AxiosInstance } from "axios";
 import checkMobile from "@/util/checkMobile";
 import debounce from "lodash.debounce";
 import { message } from "antd";
+import qs from "qs";
 
 const HOST = "http://39.108.180.34";
 
-axios.defaults.baseURL = `${HOST}:5000`;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? `http://localhost:5000`
+    : `${HOST}:5000`;
 
 export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
 
@@ -42,6 +46,16 @@ axios.interceptors.response.use(
     }
   }
 );
+
+// 请求拦截器，拦截get请求，QS序列化参数
+axios.interceptors.request.use(config => {
+  if (config.method === "get") {
+    config.paramsSerializer = function(params) {
+      return qs.stringify(params, { arrayFormat: "repeat" });
+    };
+  }
+  return config;
+});
 
 const GET = (url: string, params?: {}) => axios.get("/api" + url, { params });
 const POST = (url: string, params?: {}) => axios.post("/api" + url, params);
@@ -162,7 +176,7 @@ export const qiniuFetch = (url: string, key: string) =>
   POST("/qiniu/fetch", { url, key });
 
 export const getArticleList = (
-  type: "read" | "fm" | "music" | "movie" | "image" | "all" | "recommend"| string,
+  type: "read" | "fm" | "music" | "movie" | "image" | "all" | "recommend",
   count: number,
   skip: number = 0,
   isUser?: boolean,
@@ -205,5 +219,8 @@ export const commentArticle = (
   reply_id?: string
 ) =>
   POST("/article/comment", { article_id, commentator_id, content, reply_id });
+
+export const getCollectioins = (ids: string[]) =>
+  GET("/user/collections", { ids });
 
 export default { GET, POST };

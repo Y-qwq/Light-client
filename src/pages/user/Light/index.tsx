@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import useStarOrCollectArticle from "@/hooks/useStarOrCollectArticle";
-import { RouteConfigComponentProps } from "react-router-config";
-import { useHistory, useLocation } from "react-router";
+import { useHistory, useRouteMatch } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
 import InfiniteScroll from "react-infinite-scroller";
 import HideOnScroll from "@/common/HideOnScroll";
-import renderRoutes from "@/router/renderRoutes";
 import { List, Badge, message, Spin } from "antd";
 import Loading from "@/common/Loading";
 import MyIcon from "@/assets/MyIcon";
@@ -47,9 +45,9 @@ const translateTime = (time: string) => {
 };
 
 // LIGHT 为推荐文章阅读模块
-const Light = ({ route }: RouteConfigComponentProps) => {
+const Light = () => {
   const history = useHistory();
-  const location = useLocation();
+  const RouteMatch = useRouteMatch("/user/light");
   const [data, setData] = useState<IListData[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -61,12 +59,8 @@ const Light = ({ route }: RouteConfigComponentProps) => {
   );
 
   useEffect(() => {
-    if (/^\/user\/light\/article\/.*?$/.test(location.pathname)) {
-      setStopScroll(true);
-    } else {
-      setStopScroll(false);
-    }
-  }, [location]);
+    setStopScroll(() => (RouteMatch?.isExact ? false : true));
+  }, [RouteMatch]);
 
   const readArticle = useCallback(
     (_id: string) => {
@@ -112,103 +106,98 @@ const Light = ({ route }: RouteConfigComponentProps) => {
   );
 
   return (
-    <>
-      {route && renderRoutes(route.routes, route.authed)}
-      <div className="light" style={{ overflow: stopScroll ? "hidden" : "" }}>
-        <HideOnScroll>
-          <header className="light-header">
-            <p className="light-header-logo">Light</p>
-          </header>
-        </HideOnScroll>
-        <InfiniteScroll
-          initialLoad={true}
-          loadMore={handleFetchData}
-          hasMore={!loadingMore && hasMore}
-          useWindow={true}
-        >
-          {data.length || stopScroll ? (
-            <List
-              className="light-list"
-              dataSource={data}
-              renderItem={item => (
-                <List.Item key={item._id} onClick={() => readArticle(item._id)}>
-                  <div className="light-item">
-                    <p className="light-item-title">{item.title}</p>
-                    <p className="light-item-type-author">{`${typeMap.get(
-                      item.type
-                    )} ╱ ${item.author}`}</p>
-                    <img
-                      src={`${QINIU_CLIENT}/${item.cover}`}
-                      alt="cover"
-                      className="light-item-cover"
-                    />
-                    <p className="light-item-summary">{item.summary}</p>
-                    <div className="light-item-footer">
-                      <p className="light-item-time">
-                        {translateTime(item.created)}
-                      </p>
-                      <div className="light-item-icons">
-                        <Badge
-                          count={
-                            <p style={{ fontSize: 10 }}>
-                              {item.collection_number}
-                            </p>
+    <div className="light" style={{ overflow: stopScroll ? "hidden" : "" }}>
+      <HideOnScroll>
+        <header className="light-header">
+          <p className="light-header-logo">Light</p>
+        </header>
+      </HideOnScroll>
+      <InfiniteScroll
+        initialLoad={true}
+        loadMore={handleFetchData}
+        hasMore={!loadingMore && hasMore}
+        useWindow={true}
+      >
+        {data.length || stopScroll ? (
+          <List
+            className="light-list"
+            dataSource={data}
+            renderItem={item => (
+              <List.Item key={item._id} onClick={() => readArticle(item._id)}>
+                <div className="light-item">
+                  <p className="light-item-title">{item.title}</p>
+                  <p className="light-item-type-author">{`${typeMap.get(
+                    item.type
+                  )} ╱ ${item.author}`}</p>
+                  <img
+                    src={`${QINIU_CLIENT}/${item.cover}`}
+                    alt="cover"
+                    className="light-item-cover"
+                  />
+                  <p className="light-item-summary">{item.summary}</p>
+                  <div className="light-item-footer">
+                    <p className="light-item-time">
+                      {translateTime(item.created)}
+                    </p>
+                    <div className="light-item-icons">
+                      <Badge
+                        count={
+                          <p style={{ fontSize: 10 }}>
+                            {item.collection_number}
+                          </p>
+                        }
+                        offset={[0, 3]}
+                        showZero
+                      >
+                        <MyIcon
+                          type={`collection${
+                            collections.has(item._id) ? "-active" : ""
+                          }`}
+                          className="light-item-icons-icon"
+                          onClick={e =>
+                            handleIcons(
+                              e,
+                              "collection",
+                              item._id,
+                              !collections.has(item._id)
+                            )
                           }
-                          offset={[0, 3]}
-                          showZero
-                        >
-                          <MyIcon
-                            type={`collection${
-                              collections.has(item._id) ? "-active" : ""
-                            }`}
-                            className="light-item-icons-icon"
-                            onClick={e =>
-                              handleIcons(
-                                e,
-                                "collection",
-                                item._id,
-                                !collections.has(item._id)
-                              )
-                            }
-                          />
-                        </Badge>
-                        <Badge
-                          count={
-                            <p style={{ fontSize: 10 }}>{item.star_number}</p>
+                        />
+                      </Badge>
+                      <Badge
+                        count={
+                          <p style={{ fontSize: 10 }}>{item.star_number}</p>
+                        }
+                        offset={[0, 3]}
+                        showZero
+                      >
+                        <MyIcon
+                          type={`heart${stars.has(item._id) ? "-active" : ""}`}
+                          className="light-item-icons-icon"
+                          onClick={e =>
+                            handleIcons(
+                              e,
+                              "star",
+                              item._id,
+                              !stars.has(item._id)
+                            )
                           }
-                          offset={[0, 3]}
-                          showZero
-                        >
-                          <MyIcon
-                            type={`heart${
-                              stars.has(item._id) ? "-active" : ""
-                            }`}
-                            className="light-item-icons-icon"
-                            onClick={e =>
-                              handleIcons(
-                                e,
-                                "star",
-                                item._id,
-                                !stars.has(item._id)
-                              )
-                            }
-                          />
-                        </Badge>
-                      </div>
+                        />
+                      </Badge>
                     </div>
                   </div>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <Loading />
-          )}
-        </InfiniteScroll>
-        {data.length && loadingMore && hasMore && (
-          <Spin className="light-loading" />
+                </div>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Loading />
         )}
-      </div>
-    </>
+      </InfiniteScroll>
+      {data.length && loadingMore && hasMore && (
+        <Spin className="light-loading" />
+      )}
+    </div>
   );
 };
 

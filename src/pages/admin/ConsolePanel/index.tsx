@@ -249,7 +249,8 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
         <Content className="console-panel-content-box">
           <div className="console-panel-content">
             <Suspense fallback={<Loading />}>
-              {route && renderRoutes(route.routes, route.authed, routeProps)}
+              {route &&
+                renderRoutes(route.routes, route.authed, undefined, routeProps)}
             </Suspense>
           </div>
         </Content>

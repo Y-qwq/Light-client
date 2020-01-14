@@ -2,12 +2,11 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { RouteConfigComponentProps } from "react-router-config";
 import { useLocation, useHistory, useParams } from "react-router";
 import { getArticleList, QINIU_CLIENT } from "@/api";
-import renderRoutes from "@/router/renderRoutes";
 import Header from "@/components/Header";
 import { IListData } from "../Light";
+import { types } from "../All";
 import { Empty } from "antd";
 import "./index.scss";
-import { types } from "../All";
 
 interface IArticleCategoryData extends IListData {
   music?: {
@@ -36,7 +35,10 @@ const ArticleCategory = ({ route }: RouteConfigComponentProps) => {
     });
     (async () => {
       if (params.type) {
-        const res = await getArticleList(params.type, FETCH_ARTICLE_COUNT);
+        const res = await getArticleList(
+          params.type as "fm",
+          FETCH_ARTICLE_COUNT
+        );
         if (res.data?.type === "success") {
           setData(res.data.list);
         }
@@ -94,19 +96,16 @@ const ArticleCategory = ({ route }: RouteConfigComponentProps) => {
   }, [data, handleClick, type]);
 
   return (
-    <>
-      {route && renderRoutes(route.routes, route.auth)}
-      <div className="article-category">
-        <Header title={`${typeName}列表`} goBackUrl="/user/all" />
-        <div className="article-category-list">
-          {data.length ? (
-            list
-          ) : (
-            <Empty description="暂无文章" style={{ marginTop: 100 }} />
-          )}
-        </div>
+    <div className="article-category">
+      <Header title={`${typeName}列表`} goBackUrl="/user/all" />
+      <div className="article-category-list">
+        {data.length ? (
+          list
+        ) : (
+          <Empty description="暂无文章" style={{ marginTop: 100 }} />
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

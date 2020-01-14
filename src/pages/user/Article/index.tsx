@@ -5,7 +5,7 @@ import ArticleMusicHeader from "@/components/ArticleMusicHeader";
 import ArticleAuthorBar from "@/components/ArticleAuthorBar";
 import ArticleCommentBar from "@/components/ArticleComment";
 import ArticleFmHeader from "@/components/ArticleFmHeader";
-import { useLocation, useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import HideOnScroll from "@/common/HideOnScroll";
 import { useSelector } from "react-redux";
 import { IState } from "@/redux/reducers";
@@ -77,8 +77,8 @@ const typeMap = new Map([
 ]);
 
 const Article = () => {
-  const location = useLocation();
   const history = useHistory();
+  const params = useParams<{ id: string }>();
   const user = useSelector((state: IState) => state.user.info);
   const [stars, handleStarArticle] = useStarOrCollectArticle("star");
   const [collections, handleCollectArticle] = useStarOrCollectArticle(
@@ -90,11 +90,10 @@ const Article = () => {
 
   useEffect(() => {
     (async () => {
-      const _id = location.pathname.split("/").pop();
-      const res = await getArticleDetail(_id as string);
+      const res = await getArticleDetail(params.id);
       setArticle(res.data.article);
     })();
-  }, [location]);
+  }, [params.id]);
 
   const handleStar = useCallback(() => {
     article && handleStarArticle(article._id, stars.has(article._id) ? 0 : 1);

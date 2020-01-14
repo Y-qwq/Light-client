@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 import { Redirect } from "react-router-dom";
+import { IRouteConfig } from "./renderRoutes";
 
 import Main from "@/pages/user/Main";
 
@@ -9,10 +10,9 @@ import LoginOut from "@/components/LoginOut";
 import Register from "@/components/Register";
 
 const Article = lazy(() => import("@/pages/user/Article"));
-const ArticleCategory = lazy(() => import("@/pages/user/ArticleCategory"));
 
 // 用户(手机)路由配置
-export const mobileRouterList = [
+export const mobileRouterList: IRouteConfig[] = [
   {
     path: "/",
     exact: true,
@@ -21,42 +21,24 @@ export const mobileRouterList = [
   {
     path: "/user",
     component: Main,
+    multipleRoutes: [
+      { path: "/user/:page/article/:id", component: Article },
+      { path: "/user/:page/:childPage/article/:id", component: Article }
+    ],
     routes: [
       {
-        path: "/user/article",
-        component: Article
-      },
-      {
         path: "/user/category/:type",
-        component: ArticleCategory,
-        routes: [
-          {
-            path: "/user/category/:type/article",
-            component: Article
-          }
-        ]
+        component: lazy(() => import("@/pages/user/ArticleCategory"))
       },
       {
         path: "/user/all",
         auth: 1,
-        component: lazy(() => import("@/pages/user/All")),
-        routes: [
-          {
-            path: "/user/all/article",
-            component: Article
-          }
-        ]
+        component: lazy(() => import("@/pages/user/All"))
       },
       {
         path: "/user/light",
         auth: 1,
-        component: lazy(() => import("@/pages/user/Light")),
-        routes: [
-          {
-            path: "/user/light/article",
-            component: Article
-          }
-        ]
+        component: lazy(() => import("@/pages/user/Light"))
       },
       {
         path: "/user/me",

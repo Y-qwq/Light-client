@@ -8,8 +8,8 @@ import MyIcon from "@/assets/MyIcon";
 import "./index.scss";
 
 const UserMain = ({ route }: RouteConfigComponentProps) => {
-  const location = useLocation();
   const history = useHistory();
+  const location = useLocation();
   const { loginStatus } = useSelector((state: IState) => ({
     loginStatus: state.user.loginStatus
   }));
@@ -50,7 +50,12 @@ const UserMain = ({ route }: RouteConfigComponentProps) => {
 
   return (
     <>
-      {route && renderRoutes(route.routes, route.authed)}
+      {route &&
+        renderRoutes(
+          route.routes,
+          route.authed,
+          route.multipleRoutes
+        )}
       <div className="menu">
         {menuList.map(({ icon, name }, idx) => (
           <div

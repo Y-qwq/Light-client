@@ -27,7 +27,7 @@ export interface IComments
 export interface ICommentators
   extends Array<{ avatar: string; _id: string; username: string }> {}
 
-interface IArticleData {
+export interface IArticleData {
   _id: string;
   author: {
     _id: string;

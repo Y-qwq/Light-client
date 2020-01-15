@@ -1,0 +1,54 @@
+.preview-article {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    width: 100%;
+    min-height: 100%;
+    background-color: #fff;
+    overflow: auto;
+    zoom: 1;
+
+    &-back {
+        position: sticky;
+        left: 15px;
+        top: 15px;
+        font-size: 20px;
+        padding: 8px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        box-shadow: 1px 1px #ccc;
+
+        &:active {
+            background-color: #eee;
+        }
+    }
+
+    &-content {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%);
+        width: 50%;
+        min-width: 600px;
+        padding-bottom: 30px;
+    }
+
+    &-cover {
+        width: 100%;
+    }
+
+    &-title {
+        font-weight: 600;
+        font-size: 24px;
+        margin: 12px 0;
+        line-height: 1.22;
+        word-wrap: break-word;
+    }
+
+    &-author {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+}

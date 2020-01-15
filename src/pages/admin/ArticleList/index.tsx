@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import SelectTap, { ISelectTagData } from "@/common/SelectTap";
+import { useParams, useHistory } from "react-router-dom";
 import { SorterResult } from "antd/lib/table/interface";
+import renderRoutes from "@/router/renderRoutes";
 import AsyncSwitch from "@/common/AsyncSwitch";
-import { useParams } from "react-router-dom";
 import { ColumnProps } from "antd/es/table";
 import { Table } from "antd";
 import {
@@ -13,6 +14,7 @@ import {
   changeArticleRecommend
 } from "@/api";
 import "./index.scss";
+import { RouteConfigComponentProps } from "react-router-config";
 
 export interface IArticleListData {
   _id: string;
@@ -33,13 +35,16 @@ export interface IArticleListData {
   updated: string;
 }
 
+interface IArticleListProps extends RouteConfigComponentProps {}
+
 const PAGE_SIZE = 5;
 const passTapData: ISelectTagData = [
   { name: "过审", color: "green", key: 1 },
   { name: "未过", color: "red", key: 0 }
 ];
 
-const ArticleList = () => {
+const ArticleList = ({ route }: IArticleListProps) => {
+  const history = useHistory();
   const { type } = useParams<{ type: string }>();
   const [articleList, setArticleList] = useState([]);
 
@@ -98,6 +103,13 @@ const ArticleList = () => {
     [fetchData]
   );
 
+  const previewArticle = useCallback(
+    (_id: string) => {
+      history.push(`/admin/consolePanel/article/list/${type}/${_id}`);
+    },
+    [type, history]
+  );
+
   const changeRecommend = useCallback(
     async (_id: string, recommend: number) => {
       const res = await changeArticleRecommend(_id, recommend);
@@ -129,7 +141,12 @@ const ArticleList = () => {
       dataIndex: "title",
       sorter: true,
       width: "10%",
-      render: (title: string, { _id }: { _id: string }) => `《${title}》`
+      render: (title: string, { _id }: { _id: string }) => (
+        <p
+          className="table-title"
+          onClick={() => previewArticle(_id)}
+        >{`《${title}》`}</p>
+      )
     },
     {
       title: "作者",
@@ -239,6 +256,7 @@ const ArticleList = () => {
 
   return (
     <>
+      {route && renderRoutes(route.routes, route.authed)}
       {articleList && (
         <Table
           loading={loading}

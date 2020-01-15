@@ -78,7 +78,7 @@ export const mobileRouterList: IRouteConfig[] = [
 ];
 
 // PC端(管理员)路由配置
-export const pcRouterList = [
+export const pcRouterList: IRouteConfig[] = [
   {
     path: "/",
     exact: true,
@@ -93,6 +93,7 @@ export const pcRouterList = [
     path: "/admin/consolePanel",
     auth: 2,
     component: lazy(() => import("@/pages/admin/ConsolePanel")),
+
     routes: [
       {
         path: "/admin/consolePanel",
@@ -105,7 +106,13 @@ export const pcRouterList = [
       },
       {
         path: "/admin/consolePanel/article/list/:type",
-        component: lazy(() => import("@/pages/admin/ArticleList"))
+        component: lazy(() => import("@/pages/admin/ArticleList")),
+        routes: [
+          {
+            path: "/admin/consolePanel/article/list/:type/:id",
+            component: lazy(() => import("@/pages/admin/Article"))
+          }
+        ]
       },
       {
         path: "/admin/consolePanel/article/release/:type",

@@ -5,14 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkToken, checkAdminToken, musicLogin } from "@/api";
 import renderRoutes from "@/router/renderRoutes";
 import { useLocation } from "react-router-dom";
+import { message, ConfigProvider } from "antd";
 import { loginAction } from "@/redux/action";
 import checkMobile from "@/util/checkMobile";
 import { IState } from "@/redux/reducers";
-import { message } from "antd";
+import zhCN from "antd/es/locale/zh_CN";
 import axios from "axios";
 import "@/assets/theme/_antdTheme.less";
 import "@/assets/theme/_base.scss";
 import "@/assets/font/font.css";
+import "moment/locale/zh-cn";
 import "./index.scss";
 
 const isMobile = checkMobile();
@@ -67,7 +69,7 @@ const App: React.SFC = () => {
   }, [dispatch, checkTokenAndLogin]);
 
   return (
-    <>
+    <ConfigProvider locale={zhCN}>
       {loginStatus !== -1 ? (
         <Suspense fallback={<Loading />}>
           {renderRoutes(
@@ -78,7 +80,7 @@ const App: React.SFC = () => {
       ) : (
         <Loading />
       )}
-    </>
+    </ConfigProvider>
   );
 };
 

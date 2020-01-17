@@ -231,4 +231,6 @@ export const commentArticle = (
 export const getCollectioins = (ids: string[]) =>
   GET("/user/collections", { ids });
 
+export const getSystemInfo = () => POST("/system/info");
+
 export default { GET, POST };

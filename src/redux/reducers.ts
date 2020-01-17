@@ -18,8 +18,9 @@ export interface IUserInfo {
   collections: string[];
   stars: string[];
   email: string;
-  lastLoginIp: string;
-  lastLoginAddress: string;
+  lastLoginIp?: string;
+  lastLoginAddress?: string;
+  lastLoginDate?: string;
   qiniu?: { server: string; token: string };
   username: string;
   avatar?: string;
@@ -47,6 +48,7 @@ const userInitialState: IUser = {
     stars: [],
     lastLoginIp: "",
     lastLoginAddress: "",
+    lastLoginDate: "",
     qiniu: { server: "", token: "" },
     avatar: "",
     introduction: "",

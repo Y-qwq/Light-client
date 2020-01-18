@@ -232,7 +232,7 @@ const ConsolePanel = ({ route }: RouteConfigComponentProps) => {
           className="console-panel-menu"
           onClick={handleItemClick}
         >
-          {menuListMap(menuList)}
+          {menuListMap(user.auth <= 2 ? menuList.slice(2) : menuList)}
         </Menu>
       </Sider>
       <Layout>

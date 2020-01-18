@@ -93,15 +93,16 @@ export const pcRouterList: IRouteConfig[] = [
     path: "/admin/consolePanel",
     auth: 2,
     component: lazy(() => import("@/pages/admin/ConsolePanel")),
-
     routes: [
       {
         path: "/admin/consolePanel",
         exact: true,
+        auth: 3,
         component: lazy(() => import("@/pages/admin/Home"))
       },
       {
         path: "/admin/consolePanel/userManage",
+        auth: 3,
         component: lazy(() => import("@/pages/admin/TotalUserManage"))
       },
       {

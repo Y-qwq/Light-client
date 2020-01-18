@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
+import { RouteConfigComponentProps } from "react-router-config";
 import SelectTap, { ISelectTagData } from "@/common/SelectTap";
 import { useParams, useHistory } from "react-router-dom";
 import { SorterResult } from "antd/lib/table/interface";
 import renderRoutes from "@/router/renderRoutes";
 import AsyncSwitch from "@/common/AsyncSwitch";
 import { ColumnProps } from "antd/es/table";
+import { useSelector } from "react-redux";
+import { IState } from "@/redux/reducers";
 import { Table } from "antd";
 import {
   getArticleList,
@@ -14,7 +17,6 @@ import {
   changeArticleRecommend
 } from "@/api";
 import "./index.scss";
-import { RouteConfigComponentProps } from "react-router-config";
 
 export interface IArticleListData {
   _id: string;
@@ -46,6 +48,7 @@ const passTapData: ISelectTagData = [
 const ArticleList = ({ route }: IArticleListProps) => {
   const history = useHistory();
   const { type } = useParams<{ type: string }>();
+  const auth = useSelector((state: IState) => state.user.loginStatus);
   const [articleList, setArticleList] = useState([]);
 
   const [sorterKey, setSorterKey] = useState("");
@@ -261,7 +264,13 @@ const ArticleList = ({ route }: IArticleListProps) => {
         <Table
           loading={loading}
           bordered={true}
-          columns={columns}
+          columns={
+            auth <= 2
+              ? columns.filter(
+                  v => v.dataIndex !== "pass" && v.dataIndex !== "recommend"
+                )
+              : columns
+          }
           dataSource={articleList}
           onChange={handleChange}
           pagination={{ pageSize: PAGE_SIZE, total, hideOnSinglePage: true }}

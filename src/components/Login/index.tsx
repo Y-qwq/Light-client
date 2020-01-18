@@ -33,7 +33,15 @@ const Login = ({ type = "user" }: ILoginComp | ILoginRouteComp) => {
     if (loginStatus === "success" && user) {
       dispatch(loginAction.changeLoginStatus(user.auth));
       dispatch(loginAction.setUserInfo(user));
-      history.push(type === "admin" ? "/admin/consolePanel" : "/user/me");
+      if (type === "user") {
+        history.push("/user/me");
+      } else {
+        history.push(
+          user.auth >= 3
+            ? "/admin/consolePanel"
+            : "/admin/consolePanel/article/list/read"
+        );
+      }
     }
   }, [loginStatus, history, type, dispatch, user]);
 

@@ -48,6 +48,10 @@ export const mobileRouterList: IRouteConfig[] = [
           {
             path: "/user/me/changeInfo",
             component: lazy(() => import("@/pages/user/ChangeInfo"))
+          },
+          {
+            path: "/user/me/setting",
+            component: lazy(() => import("@/pages/user/Setting"))
           }
         ]
       },

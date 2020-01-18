@@ -1,21 +1,13 @@
 import React, { useCallback, useState } from "react";
-import { useHistory } from "react-router";
-import { IState } from "@/redux/reducers";
 import { useSelector, useDispatch } from "react-redux";
+import { TextField } from "@material-ui/core";
 import { loginAction } from "@/redux/action";
+import { IState } from "@/redux/reducers";
+import Header from "@/components/Header";
 import { updateUserInfo } from "@/api";
-import { Icon } from "antd";
-import {
-  TextField,
-  AppBar,
-  Typography,
-  Toolbar,
-  IconButton
-} from "@material-ui/core";
 import "./index.scss";
 
 const ChangeInfo = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const user = useSelector((state: IState) => state.user.info);
   const [username, setUserName] = React.useState(user.username);
@@ -32,20 +24,9 @@ const ChangeInfo = () => {
     }
   }, [username, introduction, dispatch, user.email]);
 
-  const goBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
-
   return (
     <div className="change-info">
-      <AppBar className="change-info-bar">
-        <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={goBack}>
-            <Icon type="left" />
-          </IconButton>
-          <Typography>修改信息</Typography>
-        </Toolbar>
-      </AppBar>
+      <Header title="修改信息" />
 
       <form className="change-info-form" noValidate autoComplete="off">
         <div>

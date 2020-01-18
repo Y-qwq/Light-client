@@ -39,9 +39,12 @@ const Me = ({ route }: RouteConfigComponentProps) => {
     setCurTypeList(collections.filter(item => item.type === type));
   }, [curType, collections]);
 
-  const handleGoChange = useCallback(() => {
-    history.push("/user/me/changeInfo");
-  }, [history]);
+  const handlePushHistory = useCallback(
+    (suffix: string) => {
+      history.push("/user/me/" + suffix);
+    },
+    [history]
+  );
 
   const handleChangeType = useCallback((type: string) => {
     setCurType(preState => (preState === type ? "ALL" : type));
@@ -64,12 +67,22 @@ const Me = ({ route }: RouteConfigComponentProps) => {
           backgroundImage: `url(${QINIU_CLIENT}/light/bg-user-info.jpg)`
         }}
       >
-        <MyIcon type="setting" className="me-header-setting" />
+        <MyIcon
+          type="setting"
+          className="me-header-setting"
+          onClick={() => handlePushHistory("setting")}
+        />
         <UploadAvatar _id={user._id} hash={user.avatar} />
-        <p className="me-header-name" onClick={handleGoChange}>
+        <p
+          className="me-header-name"
+          onClick={() => handlePushHistory("changeInfo")}
+        >
           {user.username}
         </p>
-        <p className="me-header-introduction" onClick={handleGoChange}>
+        <p
+          className="me-header-introduction"
+          onClick={() => handlePushHistory("changeInfo")}
+        >
           {user.introduction}
         </p>
       </div>

@@ -1,0 +1,17 @@
+.user-setting {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #eee;
+    z-index: 10;
+
+    &-list {
+        margin-top: 10px !important;
+    }
+
+    .MuiTypography-body1 {
+        font-size: 14px;
+    }
+}

@@ -4,10 +4,6 @@ import { RouteConfig } from "react-router-config";
 import checkMobile from "@/util/checkMobile";
 import { message } from "antd";
 
-type PowerPartial<T> = {
-  [U in keyof T]?: T[U] extends object ? PowerPartial<T[U]> : T[U];
-};
-
 export interface IRouteConfig extends RouteConfig {
   auth?: number;
   routes?: IRouteConfig[];

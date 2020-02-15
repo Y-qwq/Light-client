@@ -4,12 +4,9 @@ import debounce from "lodash.debounce";
 import { message } from "antd";
 import qs from "qs";
 
-const HOST = "http://39.108.180.34";
+const HOST = process.env.REACT_APP_HOST;
 
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? `http://localhost:5000`
-    : `${HOST}:5000`;
+axios.defaults.baseURL = process.env.REACT_APP_HOST_URL;
 
 export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
 

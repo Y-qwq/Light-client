@@ -32,7 +32,6 @@ export const mobileRouterList: IRouteConfig[] = [
       },
       {
         path: "/user/all",
-        auth: 1,
         component: lazy(() => import("@/pages/user/All"))
       },
       {

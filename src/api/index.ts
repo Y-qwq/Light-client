@@ -188,7 +188,7 @@ export const getArticleList = (
   sorterKey?: string,
   sorterMethod?: "descend" | "ascend"
 ) =>
-  GET("/article/get", { type, count, skip, isUser, sorterKey, sorterMethod });
+  GET("/article/list", { type, count, skip, isUser, sorterKey, sorterMethod });
 
 export const changeArticleBanned = (_id: string, banned: number) =>
   POST("/article/banned", { _id, banned });

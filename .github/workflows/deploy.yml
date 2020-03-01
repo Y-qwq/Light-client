@@ -1,0 +1,28 @@
+name: Deploy To Aliyun CI
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # 直接ssh到服务器拉取代码进行操作（主要是在github中打包每次下载node_modules太费时间，并且首次打包过后node_modules会有缓存，下次打包速度会加快。）
+    - name: SSH And Build
+      uses: appleboy/ssh-action@master
+      with:
+        # github setting => secrets 设置的私有变量
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.ALIYUN_TOKEN }}
+        port: ${{ secrets.REMOTE_PORT }}
+        script: |
+          cd /www/Light/Client
+          git fetch --all
+          git reset --hard origin/master
+          yarn
+          yarn build

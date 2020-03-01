@@ -12,7 +12,7 @@ const CompressionWebpackPlugin = require("compression-webpack-plugin");
 
 const isEnvProduction = process.env.NODE_ENV === "production";
 
-const addCustomize = () => config => {
+const addCompression = () => config => {
   if (isEnvProduction) {
     config.plugins.push(
       // gzip压缩
@@ -24,9 +24,17 @@ const addCustomize = () => config => {
         minRatio: 0.9
       })
     );
-    // 查看打包后各包大小
-    // config.plugins.push(new BundleAnalyzerPlugin());
   }
+
+  return config;
+};
+
+// 查看打包后各包大小
+const addAnalyzer = () => config => {
+  if (process.env.ANALYZER) {
+    config.plugins.push(new BundleAnalyzerPlugin());
+  }
+
   return config;
 };
 
@@ -36,7 +44,8 @@ module.exports = override(
     {
       libraryName: "antd",
       libraryDirectory: "es",
-      style: "css"
+      // 若修改antd主题，"css"需改为true
+      style: "true"
     },
     {
       libraryName: "@material-ui/core",
@@ -44,11 +53,13 @@ module.exports = override(
       camel2DashComponentName: false
     }
   ]),
+  // 修改antd 主题 需 yarn add less less-loader -D 添加依赖包
   addLessLoader({
     javascriptEnabled: true
     // modifyVars: { '@primary-color': '#1DA57A' },
   }),
-  addCustomize(),
+  addCompression(),
+  addAnalyzer(),
   addWebpackPlugin(
     // 终端进度条显示
     new ProgressBarPlugin()

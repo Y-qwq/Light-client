@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect, useCallback } from "react";
+import React, { Suspense, useEffect, useCallback, useState } from "react";
 import Loading from "@/common/Loading";
-import { mobileRouterList, pcRouterList } from "@/router";
 import { useDispatch, useSelector } from "react-redux";
 import { checkToken, checkAdminToken, musicLogin } from "@/api";
 import renderRoutes from "@/router/renderRoutes";
@@ -23,6 +22,7 @@ const App: React.SFC = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const loginStatus = useSelector((state: IState) => state.user.loginStatus);
+  const [RouterList, setRouterList] = useState();
 
   const neteaseCloudMusicLogin = useCallback(
     async (account: string, password: string) => {
@@ -68,14 +68,21 @@ const App: React.SFC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, checkTokenAndLogin]);
 
+  useEffect(() => {
+    isMobile
+      ? import("@/router/mobile").then(routerList =>
+          setRouterList(routerList.default)
+        )
+      : import("@/router/pc").then(routerList =>
+          setRouterList(routerList.default)
+        );
+  }, []);
+
   return (
     <ConfigProvider locale={zhCN}>
-      {loginStatus !== -1 ? (
+      {loginStatus !== -1 && RouterList ? (
         <Suspense fallback={<Loading />}>
-          {renderRoutes(
-            isMobile ? mobileRouterList : pcRouterList,
-            loginStatus
-          )}
+          {renderRoutes(RouterList, loginStatus)}
         </Suspense>
       ) : (
         <Loading />

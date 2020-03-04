@@ -10,7 +10,7 @@ axios.defaults.baseURL = process.env.REACT_APP_HOST_URL;
 
 export const QINIU_SERVER = "https://upload-z2.qiniup.com"; // 存储区域上传域名
 
-export const QINIU_CLIENT = "http://qiniu.yezijun.top"; // 图片根地址
+export const QINIU_CLIENT = "https://qiniu.yezijun.top"; // 图片根地址
 
 const gotoLogin = debounce(
   () => {

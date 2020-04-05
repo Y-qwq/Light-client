@@ -2,7 +2,6 @@ import React from "react";
 import { Switch, Route, SwitchProps, Redirect } from "react-router";
 import { RouteConfig } from "react-router-config";
 import checkMobile from "@/util/checkMobile";
-import { message } from "antd";
 
 export interface IRouteConfig extends RouteConfig {
   auth?: number;
@@ -43,7 +42,6 @@ function renderRoutes(
                   <route.component {...props} {...extraProps} route={route} />
                 );
           } else {
-            message.warn("请先登录！");
             return (
               <Redirect
                 to={

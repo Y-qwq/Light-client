@@ -18,7 +18,7 @@ const authTapData: ISelectTagData = [
   { name: "管理员", color: "magenta", key: 3 }
 ];
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 7;
 
 const TotalUserManage: React.SFC = () => {
   const [userList, updateUserList] = useFetchUserList();

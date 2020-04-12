@@ -137,15 +137,13 @@ export const writeArticle = (data: {
 export const updateAraftSong = (music_id: string, url: string) =>
   POST("/article/updateAraftSongUrl", { music_id, url });
 
-const music: AxiosInstance = axios.create({ baseURL: `${HOST}:3000` });
+const music: AxiosInstance = axios.create({ baseURL: `${HOST}/neteaseCloud` });
 export const searchMusic = (keywords: string) =>
   music.get("/search", {
-    baseURL: `${HOST}:3000`,
     params: { keywords }
   });
 export const getSongUrl = (id: string) =>
   music.get("/song/url", {
-    baseURL: `${HOST}:3000`,
     params: { id, br: 128000 },
     withCredentials: true
   });

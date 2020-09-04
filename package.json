@@ -47,7 +47,7 @@
     "customize-cra": "^0.9.1",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "progress-bar-webpack-plugin": "^2.1.0",
     "typescript": "^3.7.4",
     "webpack-bundle-analyzer": "^3.6.0"
